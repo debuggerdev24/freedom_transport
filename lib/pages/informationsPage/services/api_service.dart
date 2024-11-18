@@ -5,6 +5,11 @@ import 'package:flutter_user/pages/communityPage/signin.dart';
 import 'package:http/http.dart' as http;
 import '../../onTripPage/map_page.dart';
 
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+
 class ApiService {
   ApiService._();
   static ApiService apiService = ApiService._();
@@ -19,17 +24,26 @@ class ApiService {
         body: jsonEncode(requestData),
       );
       debugPrint("Response Status: ${response.statusCode}");
-      debugPrint("Map: ${requestData}");
+      debugPrint("Map: $requestData");
       debugPrint("Response Body: ${response.body}");
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        var responseBody = jsonDecode(response.body);
+
+        // Save user data locally in SharedPreferences
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString("userData", jsonEncode(responseBody));
+        debugPrint("User data saved locally.");
+     
+        getUserDetails();
+
+        // Navigate to the next screen
         Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const SignInScreen()));
+            MaterialPageRoute(builder: (context) => const Maps()));
       } else if (response.statusCode == 422) {
         var errorData = jsonDecode(response.body);
         print("Failed to register: ${errorData['message']}");
       } else {
-        // status codes when error comes
         print("${response.statusCode}");
       }
     } catch (e) {

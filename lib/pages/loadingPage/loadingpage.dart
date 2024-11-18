@@ -43,100 +43,21 @@ class _LoadingPageState extends State<LoadingPage> {
     super.initState();
   }
 
-  navigate1() {
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => BookingConfirmation()));
-  }
-
-  naviagteridewithoutdestini() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => BookingConfirmation(
-          type: 2,
-        ),
-      ),
-    );
-  }
-
-  naviagterental() {
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => BookingConfirmation(
-                  type: 1,
-                )));
-  }
-
   //navigate
   navigate() async {
-    if (userRequestData.isNotEmpty && userRequestData['is_completed'] == 1) {
-      //invoice page of ride
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => const Invoice()),
-          (route) => false);
-    } else if (userDetails['metaRequest'] != null) {
-      addressList.clear();
-      userRequestData = userDetails['metaRequest']['data'];
-      // selectedHistory = i;
-      addressList.add(AddressList(
-          id: '1',
-          type: 'pickup',
-          address: userRequestData['pick_address'],
-          pickup: true,
-          latlng:
-              LatLng(userRequestData['pick_lat'], userRequestData['pick_lng']),
-          name: userDetails['name'],
-          number: userDetails['mobile']));
-      if (userRequestData['requestStops']['data'].isNotEmpty) {
-        for (var i = 0;
-            i < userRequestData['requestStops']['data'].length;
-            i++) {
-          addressList.add(AddressList(
-              id: userRequestData['requestStops']['data'][i]['id'].toString(),
-              type: 'drop',
-              address: userRequestData['requestStops']['data'][i]['address'],
-              latlng: LatLng(
-                  userRequestData['requestStops']['data'][i]['latitude'],
-                  userRequestData['requestStops']['data'][i]['longitude']),
-              name: '',
-              number: '',
-              instructions: null,
-              pickup: false));
-        }
-      }
-
-      if (userRequestData['drop_address'] != null &&
-          userRequestData['requestStops']['data'].isEmpty) {
-        addressList.add(AddressList(
-            id: '2',
-            type: 'drop',
-            pickup: false,
-            address: userRequestData['drop_address'],
-            latlng: LatLng(
-                userRequestData['drop_lat'], userRequestData['drop_lng'])));
-      }
-
-      ismulitipleride = true;
-      var val = await getUserDetails(id: userRequestData['id']);
-
-      //login page
-      if (val == true) {
-        setState(() {
-          _isLoading = false;
-        });
-        if (userRequestData['is_rental'] == true) {
-          naviagterental();
-        } else if (userRequestData['is_rental'] == false &&
-            userRequestData['drop_address'] == null) {
-          naviagteridewithoutdestini();
-        } else {
-          navigate1();
-        }
+    if (userRequestData.isNotEmpty) {
+      if (userRequestData['is_completed'] == 1) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const Invoice()),
+            (route) => false);
+      } else {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const Maps()),
+            (route) => false);
       }
     } else {
-      //home page
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => const Maps()),
@@ -150,7 +71,7 @@ class _LoadingPageState extends State<LoadingPage> {
     }
   }
 
-//get language json and data saved in local (bearer token , choosen language) and find users current status
+ 
   getLanguageDone() async {
     _package = await PackageInfo.fromPlatform();
     try {
@@ -213,10 +134,6 @@ class _LoadingPageState extends State<LoadingPage> {
               //login page
               Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (context) => const Login()));
-              // Navigator.pushAndRemoveUntil(
-              //     context,
-              //     MaterialPageRoute(builder: (context) => const LadingPage()),
-              //     (route) => false);`
             });
           } else {
             Future.delayed(const Duration(seconds: 2), () {

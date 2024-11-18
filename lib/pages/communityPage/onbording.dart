@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_user/functions/functions.dart';
 import 'package:flutter_user/pages/communityPage/signup.dart';
 import 'package:flutter_user/pages/informationsPage/aged_care_information.dart';
 import 'package:flutter_user/pages/informationsPage/components/my_textfield.dart';
@@ -17,6 +18,20 @@ bool ndisTransport = false;
 bool agedCareTransport = false;
 bool niisqTransport = false;
 bool privateTransport = false;
+bool loginLoading = true;
+int signIn = 0;
+var searchVal = '';
+bool isLoginemail = true;
+bool withOtp = false;
+bool showPassword = false;
+bool showNewPassword = false;
+bool otpSent = false;
+bool _resend = false;
+int resendTimer = 60;
+bool mobileVerified = false;
+dynamic resendTime;
+bool forgotPassword = false;
+bool newPassword = false;
 
 GlobalKey<FormState> _formKey = GlobalKey();
 
@@ -45,7 +60,6 @@ class _StepPageViewState extends State<StepPageView> {
     );
 
     if (pickedDate != null) {
-      // Format the selected date and update the controller
       setState(() {
         _txtCusBirthDate.text = DateFormat("yyyy-MM-dd").format(pickedDate);
       });
@@ -116,15 +130,13 @@ class _StepPageViewState extends State<StepPageView> {
                     decoration: InputDecoration(
                       suffixIcon: IconButton(
                         icon: Icon(Icons.calendar_today),
-                        onPressed: () => _selectDate(
-                            context), // Open date picker on icon tap
+                        onPressed: () => _selectDate(context),
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    onTap: () =>
-                        _selectDate(context), // Open date picker on field tap
+                    onTap: () => _selectDate(context),
                   ),
                   Gap(media.width * 0.04),
                   //---------------------> Gender Selection
@@ -286,40 +298,51 @@ class _StepPageViewState extends State<StepPageView> {
                     title: const Text(" Private Transport"),
                   ),
                   CustomButton(
-                    title: "Continue →",
-                    onTap: () {
-                      if (_formKey.currentState!.validate()) {
-                        requestData.addAll({
-                          "address": _txtCusAddress.text,
-                          "dob": _txtCusBirthDate.text,
-                          "gender":
-                              _selectedGender,
-                          "emg_name": _txtEmgName.text,
-                          "emg_number": _txtEmgPhone.text,
-                          "emg_email": _txtEmgEmail.text,
-                        });
-                        print(requestData);
-                        if (ndisTransport) {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const NDISInformation()));
-                        } else if (agedCareTransport) {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) =>
-                                  const AgedCareInformation()));
-                        } else if (niisqTransport) {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const NIISQInformation()));
-                        } else if (privateTransport) {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) =>
-                                  const PrivateInformation()));
+                      title: "Continue →",
+                      onTap: () async {
+                        if (_formKey.currentState!.validate()) {
+                          requestData.addAll({
+                            "address": _txtCusAddress.text,
+                            "dob": _txtCusBirthDate.text,
+                            "gender": _selectedGender,
+                            "emg_name": _txtEmgName.text,
+                            "emg_number": _txtEmgPhone.text,
+                            "emg_email": _txtEmgEmail.text,
+                          });
+                          var val = await verifyUser(
+                              _txtEmgName.text,
+                              (isLoginemail == true) ? 1 : 0,
+                              _txtEmgEmail.text,
+                              '',
+                              withOtp,
+                              forgotPassword);
+
+                          print("requestData ======> ${requestData}");
+
+                          if (ndisTransport) {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => const NDISInformation()));
+                          } else if (agedCareTransport) {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) =>
+                                    const AgedCareInformation()));
+                          } else if (niisqTransport) {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) =>
+                                    const NIISQInformation()));
+                          } else if (privateTransport) {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) =>
+                                    const PrivateInformation()));
+                          } else {
+                            ApiService.apiService
+                                .sendUserDataToApi(requestData, context);
+                          }
                         } else {
-                          ApiService.apiService
-                              .sendUserDataToApi(requestData, context);
+                          showSnackBar(context,
+                              "User verification failed. Please try again.");
                         }
-                      }
-                    },
-                  ),
+                      })
                 ],
               ),
             ),

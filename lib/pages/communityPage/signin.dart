@@ -5,6 +5,7 @@ import 'package:flutter_user/functions/functions.dart';
 import 'package:flutter_user/pages/communityPage/signup.dart';
 import 'package:flutter_user/pages/informationsPage/components/my_textfield.dart';
 import 'package:flutter_user/pages/informationsPage/services/api_service.dart';
+import 'package:flutter_user/pages/onTripPage/invoice.dart';
 import 'package:flutter_user/pages/onTripPage/map_page.dart';
 import 'package:flutter_user/styles/styles.dart';
 import 'package:flutter_user/widgets/widgets.dart';
@@ -18,10 +19,49 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  // Local keys inside stateful widget to avoid duplication
+  String _error = '';
   TextEditingController _txtEmail = TextEditingController();
   TextEditingController _txtPassword = TextEditingController();
   GlobalKey<FormState> _formKey2 = GlobalKey<FormState>();
+  bool loginLoading = true;
+  int signIn = 0;
+  var searchVal = '';
+  bool isLoginemail = true;
+  bool withOtp = false;
+  bool showPassword = false;
+  bool showNewPassword = false;
+  bool otpSent = false;
+  bool _resend = false;
+  int resendTimer = 60;
+  bool mobileVerified = false;
+  dynamic resendTime;
+  bool forgotPassword = false;
+  bool newPassword = false;
+
+  navigate(verify) {
+    if (verify == true) {
+      if (userRequestData.isNotEmpty && userRequestData['is_completed'] == 1) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const Invoice()),
+            (route) => false);
+      } else {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const Maps()),
+            (route) => false);
+      }
+    } else if (verify == false) {
+      setState(() {
+        _error =
+            'User Doesn\'t exist with this number, please Signup to continue';
+      });
+    } else {
+      _error = verify.toString();
+    }
+    loginLoading = false;
+    valueNotifierLogin.incrementNotifier();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,10 +115,9 @@ class _SignInScreenState extends State<SignInScreen> {
                     if (_formKey2.currentState!.validate()) {
                       Map requestData = {
                         "email": _txtEmail.text,
-                        "password": _txtPassword.text
+                        "password": _txtPassword.text,
                       };
 
-                      //http://65.1.206.228/
                       try {
                         Uri uri = Uri.parse('${url}api/v1/user/login');
                         http.Response response = await http.post(
@@ -86,32 +125,44 @@ class _SignInScreenState extends State<SignInScreen> {
                           headers: {"Content-Type": "application/json"},
                           body: jsonEncode(requestData),
                         );
-                        showSnackBar(
-                            context, "Status code : ${response.statusCode}");
+
                         debugPrint("Response Status: ${response.statusCode}");
                         debugPrint("Map: ${requestData}");
                         debugPrint("Response Body: ${response.body}");
 
-                        print(response.statusCode);
                         if (response.statusCode == 200 ||
                             response.statusCode == 201) {
-                          showSnackBar(context,
-                              "User Details goes to api successfully.");
-                          saveLoginStatus(_txtEmail.text);
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const Maps()));
+                          var responseBody = jsonDecode(response.body);
+
+                          // Successful login
+                          showSnackBar(context, "Login successfully");
+                          var val = await verifyUser(
+                            _txtEmail.text,
+                            (isLoginemail == true) ? 1 : 0,
+                            _txtPassword.text,
+                            '',
+                            withOtp,
+                            forgotPassword,
+                          );
+                          navigate(val);
+                        } else if (response.statusCode == 404) {
+                          // User does not exist
+                          showSnackBar(
+                              context, "User does not exist. Please sign up.");
                         } else if (response.statusCode == 422) {
                           var errorData = jsonDecode(response.body);
-                          print("Failed to register: ${errorData['message']}");
+                          showSnackBar(context, "User does not exist");
                         } else if (response.statusCode == 500) {
-                          print("You have already account go to sign in!");
+                          showSnackBar(
+                              context, "Server error! Please try again later.");
                         } else {
-                          // status codes when error comes
-                          print(
-                              "${response.statusCode} You can't filled this cause you have allready have an account");
+                          showSnackBar(
+                              context, "Unknown error: ${response.statusCode}");
                         }
                       } catch (e) {
-                        log("error: $e");
+                        log("Error: $e");
+                        showSnackBar(context,
+                            "An unexpected error occurred. Please try again.");
                       }
                     }
                   },

@@ -126,8 +126,15 @@ class SignUpScreen extends StatelessWidget {
                             "mobile": _txtPhone.text,
                             "terms_condition": true,
                           };
-                          print(requestData);
-                
+                          print("requestData=======>${requestData}");
+                          var val = await verifyUser(
+                              _txtLastName.text,
+                              (isLoginemail == true) ? 1 : 0,
+                              _txtEmailPassword.text,
+                              '',
+                              withOtp,
+                              forgotPassword);
+
                           Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -276,7 +283,7 @@ class _CustomMobileNumberFieldState extends State<CustomMobileNumberField> {
                     _txtCountryCode.text = country["code"]!;
                     print(country["code"]);
                   });
-                  Navigator.pop(context); // Close the dropdown after selection
+                  Navigator.pop(context);
                 },
               );
             }).toList(),

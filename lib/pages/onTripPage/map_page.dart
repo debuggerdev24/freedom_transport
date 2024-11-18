@@ -202,7 +202,6 @@ class _MapsState extends State<Maps>
 //navigate
   navigate() {
     ismulitipleride = false;
-
     if (choosenTransportType == 0) {
       Navigator.pushAndRemoveUntil(
           context,

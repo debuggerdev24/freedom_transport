@@ -11,6 +11,7 @@ import 'package:flutter_user/functions/notifications.dart';
 import 'package:flutter_user/pages/communityPage/lading_page.dart';
 import 'package:flutter_user/pages/communityPage/signin.dart';
 import 'package:flutter_user/pages/onTripPage/invoice.dart';
+import 'package:flutter_user/pages/onTripPage/map_page.dart';
 import 'package:flutter_user/translations/translation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -200,13 +201,9 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
             MaterialPageRoute(builder: (context) => const Invoice()),
             (route) => false);
       } else {
-        // Navigator.pushAndRemoveUntil(
-        //     context,
-        //     MaterialPageRoute(builder: (context) => const Maps()),
-        //     (route) => false);
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => const LadingPage()),
+            MaterialPageRoute(builder: (context) => const Maps()),
             (route) => false);
       }
     } else if (verify == false) {
@@ -427,8 +424,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                                 MainAxisAlignment.end,
                                             children: [
                                               MyText(
-                                                text: languages[choosenLanguage]
-                                                    ['text_sign_in'],
+                                                text: "Skip",
                                                 size: media.width * sixteen,
                                                 color: Colors.white,
                                                 fontweight: FontWeight.w600,
@@ -436,11 +432,19 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                               SizedBox(
                                                 height: media.height * 0.01,
                                               ),
-                                              Icon(
-                                                Icons
-                                                    .keyboard_double_arrow_up_rounded,
-                                                size: media.width * 0.07,
-                                                color: Colors.white,
+                                              GestureDetector(
+                                                onTap: () {
+                                                  Navigator.of(context).push(
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              const LadingPage()));
+                                                },
+                                                child: Icon(
+                                                  Icons
+                                                      .keyboard_double_arrow_up_rounded,
+                                                  size: media.width * 0.07,
+                                                  color: Colors.white,
+                                                ),
                                               ),
                                               SizedBox(
                                                 height: media.height * 0.01,
@@ -1708,6 +1712,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                           ),
                                         ],
                                       ),
+                                    // Login -signup button
                                     Button(
                                         width: media.width * 0.5,
                                         borcolor: Colors.black,
@@ -1771,6 +1776,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                                     if (isLoginemail == true) {
                                                       // var val = await emailVerify(_email.text,_password.text);
                                                       // if(val == 'success'){
+
                                                       if (forgotPassword ==
                                                           true) {
                                                         var val =

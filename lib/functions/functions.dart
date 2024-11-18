@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'dart:developer' as d;
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
@@ -725,6 +726,9 @@ userLogin(number, login, password, isOtp) async {
           .toString();
     } else {
       debugPrint(response.body);
+
+      d.log("response.body======>${response.body}");
+
       result = false;
     }
   } catch (e) {
@@ -746,6 +750,7 @@ bool changeBound = false;
 //user current state
 
 getUserDetails({id}) async {
+  d.log("id====> ${id}");
   dynamic result;
   try {
     var response = await http.get(
@@ -4268,19 +4273,18 @@ Future<void> saveLoginStatus(String email) async {
 
   await prefs.setBool('isLoggedIn', isLoggedIn);
 
-    List<String> userInfo = ['User Name', email]; // Example list
+  List<String> userInfo = ['User Name', email]; // Example list
 
-    await prefs.setStringList('userInfo', userInfo);
+  await prefs.setStringList('userInfo', userInfo);
 }
 
 bool isLoggedIn = false;
 List<String> userInfo = [];
 
 Future<void> getloginstatus() async {
-  
   final prefs = await SharedPreferences.getInstance();
 
-  isLoggedIn =  prefs.getBool('isLoggedIn') ?? false;
+  isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
   userInfo = prefs.getStringList('userInfo') ?? [];
 }
