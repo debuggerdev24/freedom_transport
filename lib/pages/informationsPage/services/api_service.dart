@@ -23,31 +23,37 @@ class ApiService {
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(requestData),
       );
+
       debugPrint("Response Status: ${response.statusCode}");
       debugPrint("Map: $requestData");
       debugPrint("Response Body: ${response.body}");
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         var responseBody = jsonDecode(response.body);
+        getUserDetails();
 
-        // Save user data locally in SharedPreferences
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString("userData", jsonEncode(responseBody));
         debugPrint("User data saved locally.");
-     
-        getUserDetails();
 
-        // Navigate to the next screen
+        // Show success message
+        showSnackBar(context, "Registration successful!");
+
+        // Navigate to the Maps screen
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => const Maps()));
       } else if (response.statusCode == 422) {
         var errorData = jsonDecode(response.body);
-        print("Failed to register: ${errorData['message']}");
+
+        // Show validation error message
+        showSnackBar(context, "Failed to register: ${errorData['message']}");
       } else {
-        print("${response.statusCode}");
+        // Show generic error message
+        showSnackBar(context, "An error occurred. Please try again later.");
       }
     } catch (e) {
-      print("Error: $e");
+      // Show exception error message
+      showSnackBar(context, "Error: $e");
     }
   }
 }

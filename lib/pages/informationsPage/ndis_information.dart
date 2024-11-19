@@ -13,7 +13,8 @@ import 'components/button.dart';
 
 // Variables to store the selected values for radio buttons and checkboxes
 bool _isNdisParticipant = false; // For NDIS Participant (Yes/No)
-bool _hasHealthCondition = false; // For Health Condition (Yes/No)
+bool _hasHealthCondition = false;
+bool ndisTransport = false; // For Health Condition (Yes/No)
 
 // Plan values
 String _planType = "AGENCY";
@@ -45,7 +46,7 @@ class _NDISInformationState extends State<NDISInformation> {
         child: SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: width * 0.062, vertical: height * 0.02),
+                horizontal: width * 0.060, vertical: height * 0.02),
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -71,7 +72,7 @@ class _NDISInformationState extends State<NDISInformation> {
                           children: [
                             Radio(
                               value: true,
-                              groupValue: _isNdisParticipant,
+                              groupValue: _isNdisParticipant!,
                               onChanged: (value) {
                                 setState(() {
                                   _isNdisParticipant = value!;
@@ -86,7 +87,7 @@ class _NDISInformationState extends State<NDISInformation> {
                           children: [
                             Radio(
                               value: false,
-                              groupValue: _isNdisParticipant,
+                              groupValue: _isNdisParticipant!,
                               onChanged: (value) {
                                 setState(() {
                                   _isNdisParticipant = value!;
@@ -143,7 +144,7 @@ class _NDISInformationState extends State<NDISInformation> {
                               },
                               activeColor: theme,
                             ),
-                            const Text("Self-Manage"),
+                            const Text("Self-Managed"),
                           ],
                         ),
                         Row(
@@ -161,33 +162,43 @@ class _NDISInformationState extends State<NDISInformation> {
                             const Text("Plan Managed"),
                           ],
                         ),
+                        if (_planType == "AGENCY" || _planType == "PLAN") ...[
+                          Gap(width * 0.03),
+                          Align(
+                            alignment: Alignment.topLeft,
+                            child: MyText(
+                              text: _planType == "AGENCY"
+                                  ? "Agency Manager Contact:"
+                                  : _planType == "PLAN"
+                                      ? "Plan Manager Contact:"
+                                      : "",
+                              size: height * 0.020,
+                              fontweight: FontWeight.bold,
+                            ),
+                          ),
+                          Gap(width * 0.03),
+                          InputInformation(
+                            title: "*Name",
+                            controller: _txtName,
+                            emptyValidation: true,
+                          ),
+                          InputInformation(
+                            title: "*Phone",
+                            controller: _txtPhone,
+                            keyboardType: TextInputType.phone,
+                            mobileValidation: true,
+                            emptyValidation: true,
+                          ),
+                          InputInformation(
+                            title: "*Email",
+                            controller: _txtEmail,
+                            emptyValidation: true,
+                            emailValidation: true,
+                          ),
+                        ],
+                        Gap(width * 0.04),
                       ],
                     ),
-                  ),
-
-                  Gap(width * 0.02),
-                  MyText(
-                    text: "Plan Manager Contact:",
-                    size: height * 0.020,
-                    fontweight: FontWeight.bold,
-                  ),
-                  InputInformation(
-                    title: "*Name",
-                    controller: _txtName,
-                    emptyValidation: true,
-                  ),
-                  InputInformation(
-                    title: "*Phone",
-                    controller: _txtPhone,
-                    keyboardType: TextInputType.phone,
-                    mobileValidation: true,
-                    emptyValidation: true,
-                  ),
-                  InputInformation(
-                    title: "*Email",
-                    controller: _txtEmail,
-                    emptyValidation: true,
-                    emailValidation: true,
                   ),
                   Gap(width * 0.04),
                   MyText(
@@ -200,7 +211,7 @@ class _NDISInformationState extends State<NDISInformation> {
                   Row(
                     children: [
                       Radio(
-                        value: true,
+                        value: false,
                         groupValue: _hasHealthCondition,
                         onChanged: (value) {
                           setState(() {
@@ -211,7 +222,7 @@ class _NDISInformationState extends State<NDISInformation> {
                       ),
                       const Text("Yes"),
                       Radio(
-                        value: false,
+                        value: true,
                         groupValue: _hasHealthCondition,
                         onChanged: (value) {
                           setState(() {
@@ -243,8 +254,22 @@ class _NDISInformationState extends State<NDISInformation> {
                     size: height * 0.020,
                     fontweight: FontWeight.bold,
                   ),
-                  const Text(
-                      "I confirm that the information provided is accurate and up-to-date."),
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: ndisTransport,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            ndisTransport = value!;
+                          });
+                        },
+                        activeColor: theme,
+                      ),
+                      const Text(
+                          "I confirm that the information provided is\n accurate and up-to-date."),
+                    ],
+                  ),
+
                   const Gap(15),
                   CustomButton(
                     title: "Submit",

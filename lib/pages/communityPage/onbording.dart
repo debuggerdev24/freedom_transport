@@ -42,6 +42,7 @@ TextEditingController _txtEmgName = TextEditingController();
 TextEditingController _txtEmgPhone = TextEditingController();
 TextEditingController _txtEmgEmail = TextEditingController();
 String _selectedGender = "male";
+String selectedTransport = '';
 
 class StepPageView extends StatefulWidget {
   const StepPageView({super.key});
@@ -96,13 +97,6 @@ class _StepPageViewState extends State<StepPageView> {
                     size: media.height * 0.020,
                     fontweight: FontWeight.bold,
                     color: textColor,
-                  ),
-                  InputInformation(
-                    title: "*Phone Number:",
-                    controller: _txtCusPhoneNumber,
-                    keyboardType: TextInputType.phone,
-                    mobileValidation: true,
-                    emptyValidation: true,
                   ),
                   InputInformation(
                     emptyValidation: true,
@@ -220,9 +214,7 @@ class _StepPageViewState extends State<StepPageView> {
                       ),
                     ],
                   ),
-                  Gap(
-                    media.width * 0.04,
-                  ),
+                  Gap(media.width * 0.04),
                   MyText(
                     textAlign: TextAlign.start,
                     text: "Emergency Contact",
@@ -257,46 +249,81 @@ class _StepPageViewState extends State<StepPageView> {
                   ),
                   const Text(
                       "*Please indicate the services you currently have:"),
-                  CheckboxListTile(
-                    activeColor: theme,
-                    value: ndisTransport,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        ndisTransport = value ?? false;
-                      });
-                    },
-                    title: const Text('NDIS Transport'),
+
+                  // Radio buttons for Service Information
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: MyText(
+                      textAlign: TextAlign.start,
+                      text: "*Service Transport:",
+                      size: media.height * 0.02,
+                      color: textColor,
+                    ),
                   ),
-                  CheckboxListTile(
-                    activeColor: theme,
-                    value: agedCareTransport,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        agedCareTransport = value ?? false;
-                      });
-                    },
-                    title: const Text("Aged Care Transport"),
+                  Row(
+                    children: [
+                      Radio(
+                        activeColor: theme,
+                        value: "ndis",
+                        groupValue: selectedTransport,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedTransport = value!;
+                          });
+                        },
+                      ),
+                      MyText(text: "NDIS Transport", size: media.height * 0.02)
+                    ],
                   ),
-                  CheckboxListTile(
-                    activeColor: theme,
-                    value: niisqTransport,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        niisqTransport = value ?? false;
-                      });
-                    },
-                    title: const Text("NIISQ Transport"),
+                  Row(
+                    children: [
+                      Radio(
+                        activeColor: theme,
+                        value: "agedCare",
+                        groupValue: selectedTransport,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedTransport = value!;
+                          });
+                        },
+                      ),
+                      MyText(
+                          text: "Aged Care Transport",
+                          size: media.height * 0.02)
+                    ],
                   ),
-                  CheckboxListTile(
-                    activeColor: theme,
-                    value: privateTransport,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        privateTransport = value ?? false;
-                      });
-                    },
-                    title: const Text(" Private Transport"),
+                  Row(
+                    children: [
+                      Radio(
+                        activeColor: theme,
+                        value: "niisq",
+                        groupValue: selectedTransport,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedTransport = value!;
+                          });
+                        },
+                      ),
+                      MyText(text: "NIISQ Transport", size: media.height * 0.02)
+                    ],
                   ),
+                  Row(
+                    children: [
+                      Radio(
+                        activeColor: theme,
+                        value: "private",
+                        groupValue: selectedTransport,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedTransport = value!;
+                          });
+                        },
+                      ),
+                      MyText(
+                          text: "Private Transport", size: media.height * 0.02)
+                    ],
+                  ),
+
                   CustomButton(
                       title: "Continue →",
                       onTap: () async {
@@ -306,9 +333,9 @@ class _StepPageViewState extends State<StepPageView> {
                             "dob": _txtCusBirthDate.text,
                             "gender": _selectedGender,
                             "emg_name": _txtEmgName.text,
-                            "emg_number": _txtEmgPhone.text,
                             "emg_email": _txtEmgEmail.text,
                           });
+
                           var val = await verifyUser(
                               _txtEmgName.text,
                               (isLoginemail == true) ? 1 : 0,
@@ -319,18 +346,19 @@ class _StepPageViewState extends State<StepPageView> {
 
                           print("requestData ======> ${requestData}");
 
-                          if (ndisTransport) {
+                          // Navigate based on selected transport
+                          if (selectedTransport == "ndis") {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => const NDISInformation()));
-                          } else if (agedCareTransport) {
+                          } else if (selectedTransport == "agedCare") {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) =>
                                     const AgedCareInformation()));
-                          } else if (niisqTransport) {
+                          } else if (selectedTransport == "niisq") {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) =>
                                     const NIISQInformation()));
-                          } else if (privateTransport) {
+                          } else if (selectedTransport == "private") {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) =>
                                     const PrivateInformation()));

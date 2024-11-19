@@ -1,5 +1,7 @@
-import 'package:contacts_service/contacts_service.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_contacts/contact.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_user/pages/login/login.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -41,42 +43,87 @@ class _PickContactState extends State<PickContact> {
     return status;
   }
 
-//fetch contact data
-  getContact() async {
+// fetch contact data
+  // `getContact() async {
+  //   if (contacts.isEmpty) {
+  //     var permission = await getContactPermission();
+  //     if (permission == PermissionStatus.granted) {
+  //       if (mounted) {
+  //         setState(() {
+  //           _isLoading = true;
+  //         });
+  //       }
+
+  //       // Iterable<Contact> contactsList = await ContactsService.getContacts();
+
+  //       // // ignore: avoid_function_literals_in_foreach_calls
+  //       // contactsList.forEach((contact) {
+  //       //   contact.phones!.toSet().forEach((phone) {
+  //       //     contacts.add({
+  //       //       'name': contact.displayName ?? contact.givenName,
+  //       //       'phone': phone.value
+  //       //     });
+  //       //   }
+  //       //  );
+  //      // });
+  //       if (mounted) {
+  //         setState(() {
+  //           _isLoading = false;
+  //         });
+  //       }
+  //     } else {
+  //       setState(() {
+  //         _noPermission = true;
+  //         _isLoading = false;
+  //       });
+  //     }
+  //   }
+  // }`
+  Future<void> getContact() async {
     if (contacts.isEmpty) {
-      var permission = await getContactPermission();
-      if (permission == PermissionStatus.granted) {
+      // Check for permission
+      bool permissionGranted = await FlutterContacts.requestPermission();
+
+      if (permissionGranted) {
         if (mounted) {
           setState(() {
             _isLoading = true;
           });
         }
 
-        Iterable<Contact> contactsList = await ContactsService.getContacts();
+        // Fetch contacts
+        List<Contact> contactsList = await FlutterContacts.getContacts(
+          withProperties: true, // Include detailed properties
+          withPhoto: false, // Set true if you need photos
+        );
 
-        // ignore: avoid_function_literals_in_foreach_calls
+        // Process the contacts
         contactsList.forEach((contact) {
-          contact.phones!.toSet().forEach((phone) {
-            contacts.add({
-              'name': contact.displayName ?? contact.givenName,
-              'phone': phone.value
+          if (contact.phones.isNotEmpty) {
+            contact.phones.forEach((phone) {
+              contacts.add({
+                'name': contact.displayName ?? contact.name.first,
+                'phone': phone.number,
+              });
             });
-          });
+          }
         });
+
         if (mounted) {
           setState(() {
             _isLoading = false;
           });
         }
       } else {
-        setState(() {
-          _noPermission = true;
-          _isLoading = false;
-        });
+        if (mounted) {
+          setState(() {
+            _noPermission = true;
+            _isLoading = false;
+          });
+        }
       }
     }
   }
-
   //navigate pop
 
   pop() {

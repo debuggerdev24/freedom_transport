@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_user/pages/NavigatorPages/fav_address.dart';
 import 'package:flutter_user/pages/NavigatorPages/makecomplaint.dart';
 import 'package:flutter_user/pages/NavigatorPages/outstation.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../functions/functions.dart';
 import '../../styles/styles.dart';
 import '../../translations/translation.dart';
@@ -25,6 +28,27 @@ class NavDrawer extends StatefulWidget {
 
 class _NavDrawerState extends State<NavDrawer> {
   @override
+    @override
+  void initState() {
+    super.initState();
+    _loadUserData(); 
+  }
+
+ 
+  Future<void> _loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userData = prefs.getString("userData"); 
+
+    if (userData != null) {
+      setState(() {
+        userDetails = jsonDecode(userData); 
+      });
+    } else {
+     
+      print("No user data found in SharedPreferences");
+    }
+  }
+
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
     return ValueListenableBuilder(

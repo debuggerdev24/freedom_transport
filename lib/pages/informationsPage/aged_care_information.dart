@@ -15,6 +15,7 @@ String _selectedCareLevel = "LEVEL_1";
 bool _isAgedCareParticipant = false;
 bool _isChspSupport = false;
 bool _hasHealthCondition = false;
+bool _agecaretransport = false;
 
 GlobalKey<FormState> _formKey = GlobalKey();
 
@@ -262,8 +263,21 @@ class _AgedCareInformationState extends State<AgedCareInformation> {
                     fontweight: FontWeight.bold,
                     color: textColor,
                   ),
-                  const Text(
-                      "I confirm that the information provided is accurate and up-to-date."),
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: _agecaretransport,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _agecaretransport = value!;
+                          });
+                        },
+                        activeColor: theme,
+                      ),
+                      const Text(
+                          "I confirm that the information provided is\n accurate and up-to-date."),
+                    ],
+                  ),
                   const Gap(15),
                   CustomButton(
                     title: "Submit",

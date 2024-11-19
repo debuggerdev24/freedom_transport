@@ -395,22 +395,22 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                 clipper: ShapePainterBottom(),
                                 child: GestureDetector(
                                   onTap: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                SignInScreen()));
-                                    setState(() {
-                                      if (showSignin == false) {
-                                        showSignin = true;
-                                      }
-                                    });
-                                  },
-                                  onVerticalDragStart: (v) {
-                                    setState(() {
-                                      if (showSignin == false) {
-                                        showSignin = true;
-                                      }
-                                    });
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  SignInScreen()));
+                                      setState(() {
+                                        if (showSignin == false) {
+                                          showSignin = true;
+                                        }
+                                      });
+                                    },
+                                    onVerticalDragStart: (v) {
+                                      setState(() {
+                                        if (showSignin == false) {
+                                          showSignin = true;
+                                        }
+                                      });
                                   },
                                   child: Container(
                                     decoration: BoxDecoration(

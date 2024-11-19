@@ -485,6 +485,53 @@ registerUser() async {
   return result;
 }
 
+Future<void> sendUserDataToApi(
+    Map<String, dynamic> requestData, BuildContext context) async {
+  Uri uri = Uri.parse("${url}api/v1/user/register");
+  try {
+    http.Response response = await http.post(
+      uri,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(requestData),
+    );
+
+    debugPrint("Response Status: ${response.statusCode}");
+    debugPrint("Map: $requestData");
+    debugPrint("Response Body: ${response.body}");
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      var responseBody = jsonDecode(response.body);
+      // bearerToken.add(BearerClass(
+      //     type: responseBody['token_type'].toString(),
+      //     token: responseBody['access_token'].toString()));
+      pref.setString('Bearer', bearerToken[0].token);
+      await getUserDetails();
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString("userData", jsonEncode(responseBody));
+      debugPrint("User data saved locally.");
+
+      // Show success message
+      // showSnackBar(context, "Registration successful!");
+
+      // Navigate to the Maps screen
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const Maps()));
+    } else if (response.statusCode == 422) {
+      var errorData = jsonDecode(response.body);
+
+      // Show validation error message
+      // showSnackBar(context, "Failed to register: ${errorData['message']}");
+    } else {
+      // Show generic error message
+      // showSnackBar(context, "An error occurred. Please try again later.");
+    }
+  } catch (e) {
+    // Show exception error message
+    // showSnackBar(context, "Error: $e");
+  }
+}
+
 //update referral code
 
 updateReferral() async {

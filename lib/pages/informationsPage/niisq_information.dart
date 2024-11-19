@@ -180,8 +180,21 @@ class _NIISQInformationState extends State<NIISQInformation> {
                       size: height * 0.020,
                       fontweight: FontWeight.bold,
                       color: textColor),
-                  const Text(
-                      "I confirm that the information provided is accurate and up-to-date."),
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: niisqTransport,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            niisqTransport = value!;
+                          });
+                        },
+                        activeColor: theme,
+                      ),
+                      const Text(
+                          "I confirm that the information provided is\n accurate and up-to-date."),
+                    ],
+                  ),
                   const Gap(15),
                   CustomButton(
                     title: "Submit",

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_user/pages/communityPage/onbording.dart';
 import 'package:flutter_user/pages/communityPage/signup.dart';
 import 'package:flutter_user/pages/informationsPage/components/my_textfield.dart';
 import 'package:flutter_user/pages/informationsPage/services/api_service.dart';
@@ -8,6 +9,7 @@ import '../../widgets/widgets.dart';
 import 'components/button.dart';
 
 bool _hasHealthConditions = false;
+bool _privatetransport = false;
 TextEditingController _txtHealthInformation = TextEditingController();
 TextEditingController _txtOtherInformation = TextEditingController();
 
@@ -99,8 +101,21 @@ class _PrivateInformationState extends State<PrivateInformation> {
                     size: height * 0.020,
                     fontweight: FontWeight.bold,
                     color: textColor),
-                const Text(
-                    "I confirm that the information provided is accurate and up-to-date."),
+                Row(
+                  children: [
+                    Checkbox(
+                      value: privateTransport,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          privateTransport = value!;
+                        });
+                      },
+                      activeColor: theme,
+                    ),
+                    const Text(
+                        "I confirm that the information provided \nis accurate and up-to-date."),
+                  ],
+                ),
                 const Gap(15),
                 CustomButton(
                   title: "Submit",
