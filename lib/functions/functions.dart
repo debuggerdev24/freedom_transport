@@ -411,6 +411,10 @@ getLocalData() async {
 
 List<BearerClass> bearerToken = <BearerClass>[];
 
+clearToken() {
+  bearerToken.clear();
+}
+
 registerUser() async {
   bearerToken.clear();
   dynamic result;

@@ -4,6 +4,8 @@ import 'package:flutter_user/pages/communityPage/onbording.dart';
 import 'package:flutter_user/pages/communityPage/signin.dart';
 import 'package:flutter_user/pages/informationsPage/components/my_textfield.dart';
 import 'package:flutter_user/pages/informationsPage/services/api_service.dart';
+import 'package:flutter_user/pages/onTripPage/invoice.dart';
+import 'package:flutter_user/pages/onTripPage/map_page.dart';
 import 'package:flutter_user/styles/styles.dart';
 import 'package:flutter_user/widgets/widgets.dart';
 
@@ -20,10 +22,35 @@ TextEditingController _txtReTypePassword = TextEditingController();
 
 Map<String, dynamic> userDetails = {};
 
-class SignUpScreen extends StatelessWidget {
+class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
 
   @override
+  State<SignUpScreen> createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
+  @override
+  navigate(verify) {
+    if (verify == true) {
+      if (userRequestData.isNotEmpty && userRequestData['is_completed'] == 1) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const Invoice()),
+            (route) => false);
+      } else {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const Maps()),
+            (route) => false);
+      }
+    } else if (verify == false) {
+      setState(() {});
+    } else {}
+    loginLoading = false;
+    valueNotifierLogin.incrementNotifier();
+  }
+
   Widget build(BuildContext context) {
     _txtCountryCode.text = "+91";
     var media = MediaQuery.of(context).size;
@@ -127,13 +154,6 @@ class SignUpScreen extends StatelessWidget {
                             "terms_condition": true,
                           };
                           print("requestData=======>${requestData}");
-                          var val = await verifyUser(
-                              _txtLastName.text,
-                              (isLoginemail == true) ? 1 : 0,
-                              _txtEmailPassword.text,
-                              '',
-                              withOtp,
-                              forgotPassword);
 
                           Navigator.push(
                               context,

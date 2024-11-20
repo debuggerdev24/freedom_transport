@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_user/functions/functions.dart';
 import 'package:flutter_user/pages/communityPage/signin.dart';
@@ -16,6 +17,7 @@ class ApiService {
 
   Future<void> sendUserDataToApi(
       Map<String, dynamic> requestData, BuildContext context) async {
+    clearToken();
     Uri uri = Uri.parse("${url}api/v1/user/register");
     try {
       http.Response response = await http.post(
@@ -30,8 +32,14 @@ class ApiService {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         var responseBody = jsonDecode(response.body);
-        getUserDetails();
+        log('adding token');
 
+        bearerToken.add(BearerClass(
+            type: responseBody['token_type'].toString(),
+            token: responseBody['access_token'].toString()));
+        pref.setString('Bearer', bearerToken[0].token);
+        await getUserDetails();
+        log('fetched user details.');
         showSnackBar(context, "Registration successful!");
 
         Navigator.of(context).pushReplacement(
