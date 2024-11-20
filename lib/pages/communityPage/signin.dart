@@ -137,13 +137,13 @@ class _SignInScreenState extends State<SignInScreen> {
                           // Successful login
                           showSnackBar(context, "Login successfully");
                           var val = await verifyUser(
-                            _txtEmail.text,
-                            (isLoginemail == true) ? 1 : 0,
-                            _txtPassword.text,
-                            '',
-                            withOtp,
-                            forgotPassword,
-                          );
+                              _txtEmail.text,
+                              (isLoginemail == true) ? 1 : 0,
+                              _txtPassword.text,
+                              '',
+                              withOtp,
+                              forgotPassword);
+
                           navigate(val);
                         } else if (response.statusCode == 404) {
                           // User does not exist

@@ -32,27 +32,19 @@ class ApiService {
         var responseBody = jsonDecode(response.body);
         getUserDetails();
 
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString("userData", jsonEncode(responseBody));
-        debugPrint("User data saved locally.");
-
-        // Show success message
         showSnackBar(context, "Registration successful!");
 
-        // Navigate to the Maps screen
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => const Maps()));
       } else if (response.statusCode == 422) {
         var errorData = jsonDecode(response.body);
 
-        // Show validation error message
         showSnackBar(context, "Failed to register: ${errorData['message']}");
-      } else {
-        // Show generic error message
-        showSnackBar(context, "An error occurred. Please try again later.");
+      } else if (response.statusCode == 500) {
+        var errorData = jsonDecode(response.body);
+        showSnackBar(context, " ${errorData['message']}");
       }
     } catch (e) {
-      // Show exception error message
       showSnackBar(context, "Error: $e");
     }
   }

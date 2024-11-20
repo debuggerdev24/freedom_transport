@@ -28,27 +28,6 @@ class NavDrawer extends StatefulWidget {
 
 class _NavDrawerState extends State<NavDrawer> {
   @override
-    @override
-  void initState() {
-    super.initState();
-    _loadUserData(); 
-  }
-
- 
-  Future<void> _loadUserData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? userData = prefs.getString("userData"); 
-
-    if (userData != null) {
-      setState(() {
-        userDetails = jsonDecode(userData); 
-      });
-    } else {
-     
-      print("No user data found in SharedPreferences");
-    }
-  }
-
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
     return ValueListenableBuilder(
@@ -91,17 +70,17 @@ class _NavDrawerState extends State<NavDrawer> {
                           ),
                           child: Row(
                             children: [
-                              // Container(
-                              //   width: media.width * 0.15,
-                              //   height: media.width * 0.15,
-                              //   decoration: BoxDecoration(
-                              //       borderRadius: BorderRadius.circular(8),
-                              //       image: DecorationImage(
-                              //           image: NetworkImage(userDetails[
-                              //                   'profile_picture'] ??
-                              //               "https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D"),
-                              //           fit: BoxFit.cover)),
-                              // ),
+                              Container(
+                                width: media.width * 0.15,
+                                height: media.width * 0.15,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    image: DecorationImage(
+                                        image: NetworkImage(userDetails[
+                                                'profile_picture'] ??
+                                            "https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D"),
+                                        fit: BoxFit.cover)),
+                              ),
                               SizedBox(
                                 width: media.width * 0.025,
                               ),
