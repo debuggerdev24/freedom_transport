@@ -40,6 +40,15 @@ class _NDISInformationState extends State<NDISInformation> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
+    _clearFormData() {
+      _txtNdisNumber.clear();
+      _txtName.clear();
+      _txtPhone.clear();
+      _txtEmail.clear();
+      _txtHealthInformation.clear();
+      _txtOtherInformation.clear();
+    }
+
     return Scaffold(
       body: Form(
         key: _formKey,
@@ -290,8 +299,9 @@ class _NDISInformationState extends State<NDISInformation> {
                               : "Nothing any health conditions",
                           "other": _txtOtherInformation.text,
                         };
-                        print(requestData);
+
                         if (agedCareTransport) {
+                          await _clearFormData();
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) =>
                                   const AgedCareInformation()));

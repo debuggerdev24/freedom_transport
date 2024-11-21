@@ -441,6 +441,8 @@ registerUser() async {
       'gender': (gender == 'male')
           ? 'male'
           : (gender == 'female')
+
+          
               ? 'female'
               : 'others',
     });

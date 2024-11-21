@@ -155,10 +155,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           };
                           print("requestData=======>${requestData}");
 
+                          _txtFirstName.clear();
+                          _txtEmail.clear();
+                          _txtEmailPassword.clear();
+                          _txtLastName.clear();
+                          _txtCountryCode.clear();
+                          _txtPhone.clear();
+                          _txtReTypePassword.clear();
+
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const StepPageView()));
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const StepPageView(),
+                            ),
+                          );
                         } else {
                           showSnackBar(context, "Passwords do not match");
                         }

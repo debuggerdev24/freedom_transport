@@ -38,15 +38,17 @@ class ApiService {
             type: responseBody['token_type'].toString(),
             token: responseBody['access_token'].toString()));
         pref.setString('Bearer', bearerToken[0].token);
+
         await getUserDetails();
         log('fetched user details.');
         showSnackBar(context, "Registration successful!");
 
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const Maps()));
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const Maps()),
+            (route) => false);
       } else if (response.statusCode == 422) {
         var errorData = jsonDecode(response.body);
-
         showSnackBar(context, "Failed to register: ${errorData['message']}");
       } else if (response.statusCode == 500) {
         var errorData = jsonDecode(response.body);

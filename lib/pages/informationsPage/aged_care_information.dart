@@ -288,7 +288,7 @@ class _AgedCareInformationState extends State<AgedCareInformation> {
                           "number": _txtAgedCareNumber.text,
                           "provider_name": _txtServiceProvideName.text,
                           "care_package":
-                              _selectedCareLevel, //must be this - LEVEL_1,LEVEL_2,LEVEL_3,LEVEL_4
+                              _selectedCareLevel,
                           "case_manager_name": _txtName.text,
                           "case_manager_phone": _txtPhone.text,
                           "case_manager_email": _txtEmail.text,

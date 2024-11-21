@@ -250,7 +250,6 @@ class _StepPageViewState extends State<StepPageView> {
                   const Text(
                       "*Please indicate the services you currently have:"),
 
-                  // Radio buttons for Service Information
                   Align(
                     alignment: Alignment.topLeft,
                     child: MyText(
@@ -325,9 +324,11 @@ class _StepPageViewState extends State<StepPageView> {
                   ),
 
                   CustomButton(
-                      title: "Continue →",
-                      onTap: () async {
-                        if (_formKey.currentState!.validate()) {
+                    title: "Continue →",
+                    onTap: () async {
+                      if (_formKey.currentState!.validate() &&
+                          selectedTransport.isNotEmpty) {
+                        {
                           requestData.addAll({
                             "address": _txtCusAddress.text,
                             "dob": _txtCusBirthDate.text,
@@ -337,40 +338,50 @@ class _StepPageViewState extends State<StepPageView> {
                           });
 
                           var val = await verifyUser(
-                              _txtEmgName.text,
-                              (isLoginemail == true) ? 1 : 0,
-                              _txtEmgEmail.text,
-                              '',
-                              withOtp,
-                              forgotPassword);
+                            _txtEmgName.text,
+                            (isLoginemail == true) ? 1 : 0,
+                            _txtEmgEmail.text,
+                            '',
+                            withOtp,
+                            forgotPassword,
+                          );
+                          await _clearFormData();
 
-                          print("requestData ======> ${requestData}");
-
-                          // Navigate based on selected transport
                           if (selectedTransport == "ndis") {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const NDISInformation()));
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const NDISInformation()),
+                            );
                           } else if (selectedTransport == "agedCare") {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) =>
-                                    const AgedCareInformation()));
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const AgedCareInformation()),
+                            );
                           } else if (selectedTransport == "niisq") {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) =>
-                                    const NIISQInformation()));
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const NIISQInformation()),
+                            );
                           } else if (selectedTransport == "private") {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) =>
-                                    const PrivateInformation()));
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const PrivateInformation()),
+                            );
                           } else {
                             ApiService.apiService
                                 .sendUserDataToApi(requestData, context);
                           }
-                        } else {
-                          showSnackBar(context,
-                              "User verification failed. Please try again.");
                         }
-                      })
+                      } else {
+                        showSnackBar(context,
+                            "User verification failed. Please try again.");
+                      }
+                    },
+                  )
                 ],
               ),
             ),
@@ -378,5 +389,14 @@ class _StepPageViewState extends State<StepPageView> {
         ),
       ),
     );
+  }
+
+  _clearFormData() {
+    _txtCusAddress.clear();
+    _txtCusBirthDate.clear();
+    _txtEmgName.clear();
+    _txtEmgEmail.clear();
+    _txtEmgPhone.clear();
+    _selectedGender = "male";
   }
 }
