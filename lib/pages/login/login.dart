@@ -395,22 +395,22 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                 clipper: ShapePainterBottom(),
                                 child: GestureDetector(
                                   onTap: () {
-                                    //   Navigator.of(context).push(
-                                    //       MaterialPageRoute(
-                                    //           builder: (context) =>
-                                    //               SignInScreen()));
-                                    //   setState(() {
-                                    //     if (showSignin == false) {
-                                    //       showSignin = true;
-                                    //     }
-                                    //   });
-                                    // },
-                                    // onVerticalDragStart: (v) {
-                                    //   setState(() {
-                                    //     if (showSignin == false) {
-                                    //       showSignin = true;
-                                    //     }
-                                    //   });
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                SignInScreen()));
+                                    setState(() {
+                                      if (showSignin == false) {
+                                        showSignin = true;
+                                      }
+                                    });
+                                  },
+                                  onVerticalDragStart: (v) {
+                                    setState(() {
+                                      if (showSignin == false) {
+                                        showSignin = true;
+                                      }
+                                    });
                                   },
                                   child: Container(
                                     decoration: BoxDecoration(
@@ -423,11 +423,19 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.end,
                                             children: [
-                                              MyText(
-                                                text: "Skip",
-                                                size: media.width * sixteen,
-                                                color: Colors.white,
-                                                fontweight: FontWeight.w600,
+                                              GestureDetector(
+                                                onTap: () {
+                                                  Navigator.of(context).push(
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              const LadingPage()));
+                                                },
+                                                child: MyText(
+                                                  text: "Skip",
+                                                  size: media.width * sixteen,
+                                                  color: Colors.white,
+                                                  fontweight: FontWeight.w600,
+                                                ),
                                               ),
                                               SizedBox(
                                                 height: media.height * 0.01,
@@ -447,7 +455,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                                 ),
                                               ),
                                               SizedBox(
-                                                height: media.height * 0.01,
+                                                height: media.height * 0.04,
                                               ),
                                             ],
                                           )

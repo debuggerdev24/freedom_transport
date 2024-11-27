@@ -106,6 +106,23 @@ class _SignInScreenState extends State<SignInScreen> {
                   boldTitle: true,
                   emptyValidation: true,
                   passwordValidation: true,
+                  obscureText: !showPassword,
+                  suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          if (showPassword) {
+                            showPassword = false;
+                          } else {
+                            showPassword = true;
+                          }
+                        });
+                      },
+                      icon: Icon(
+                        Icons.remove_red_eye_sharp,
+                        color: (showPassword == true)
+                            ? const Color(0xff60b0b2)
+                            : null,
+                      )),
                 ),
                 SizedBox(
                   height: media.width * 0.1,

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_user/functions/functions.dart';
 import 'package:flutter_user/pages/communityPage/signup.dart';
@@ -43,6 +45,7 @@ TextEditingController _txtEmgPhone = TextEditingController();
 TextEditingController _txtEmgEmail = TextEditingController();
 String _selectedGender = "male";
 String selectedTransport = '';
+bool isFormedclear = false;
 
 class StepPageView extends StatefulWidget {
   const StepPageView({super.key});
@@ -68,6 +71,14 @@ class _StepPageViewState extends State<StepPageView> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    if (isFormedclear) {
+      _clearFormData();
+      isFormedclear = false;
+    }
+  }
+
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
 
@@ -326,8 +337,7 @@ class _StepPageViewState extends State<StepPageView> {
                   CustomButton(
                     title: "Continue →",
                     onTap: () async {
-                      if (_formKey.currentState!.validate() &&
-                          selectedTransport.isNotEmpty) {
+                      if (_formKey.currentState!.validate()) {
                         {
                           requestData.addAll({
                             "address": _txtCusAddress.text,
@@ -336,7 +346,8 @@ class _StepPageViewState extends State<StepPageView> {
                             "emg_name": _txtEmgName.text,
                             "emg_email": _txtEmgEmail.text,
                           });
-
+                          log("requestdata======>${requestData}",
+                              name: "Steppage");
                           var val = await verifyUser(
                             _txtEmgName.text,
                             (isLoginemail == true) ? 1 : 0,
@@ -345,7 +356,13 @@ class _StepPageViewState extends State<StepPageView> {
                             withOtp,
                             forgotPassword,
                           );
-                          await _clearFormData();
+
+                          if (selectedTransport == "ndis" ||
+                              selectedTransport == "agedCare" ||
+                              selectedTransport == "niisq" ||
+                              selectedTransport == "private") {
+                            isFormedclear = true;
+                          }
 
                           if (selectedTransport == "ndis") {
                             Navigator.of(context).push(
@@ -372,7 +389,7 @@ class _StepPageViewState extends State<StepPageView> {
                                       const PrivateInformation()),
                             );
                           } else {
-                            ApiService.apiService
+                            await ApiService.apiService
                                 .sendUserDataToApi(requestData, context);
                           }
                         }
@@ -397,6 +414,7 @@ class _StepPageViewState extends State<StepPageView> {
     _txtEmgName.clear();
     _txtEmgEmail.clear();
     _txtEmgPhone.clear();
+    selectedTransport = "";
     _selectedGender = "male";
   }
 }

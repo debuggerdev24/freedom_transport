@@ -35,13 +35,25 @@ class _PrivateInformationState extends State<PrivateInformation> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    IconButton(
+                      icon:
+                          Icon(Icons.arrow_back, color: inputfocusedUnderline),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                ),
                 MyText(
                   text: "Private Information",
                   size: height * 0.020,
                   fontweight: FontWeight.bold,
                   color: textColor,
                 ),
-                Gap(height * 0.04),
+                Gap(height * 0.02),
                 MyText(
                   text: "*Health Information",
                   size: height * 0.020,
@@ -120,11 +132,15 @@ class _PrivateInformationState extends State<PrivateInformation> {
                 CustomButton(
                   title: "Submit",
                   onTap: () {
-                    requestData["user_private_details"] = {
-                      "health_awareness": _hasHealthConditions,
-                      "health_details": _txtHealthInformation.text,
-                      "other": _txtOtherInformation.text
-                    };
+                    requestData["user_private_details"] = [
+                      {
+                        "health_awareness": _hasHealthConditions,
+                        "health_details": _txtHealthInformation.text,
+                        "other": _txtOtherInformation.text
+                      }
+                    ];
+
+                    _clearFormData();
                     ApiService.apiService
                         .sendUserDataToApi(requestData, context);
                   },
@@ -158,5 +174,11 @@ class _PrivateInformationState extends State<PrivateInformation> {
         Text(title),
       ],
     );
+  }
+
+  Future<void> _clearFormData() async {
+    _txtHealthInformation.clear();
+    _txtOtherInformation.clear();
+    _hasHealthConditions = false;
   }
 }

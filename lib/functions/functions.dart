@@ -441,8 +441,6 @@ registerUser() async {
       'gender': (gender == 'male')
           ? 'male'
           : (gender == 'female')
-
-          
               ? 'female'
               : 'others',
     });
@@ -768,9 +766,11 @@ getUserDetails({id}) async {
         'Authorization': 'Bearer ${bearerToken[0].token}'
       },
     );
+
     if (response.statusCode == 200) {
       userDetails =
           Map<String, dynamic>.from(jsonDecode(response.body)['data']);
+      d.log('user detai => $userDetails');
 
       favAddress = userDetails['favouriteLocations']['data'];
       sosData = userDetails['sos']['data'];

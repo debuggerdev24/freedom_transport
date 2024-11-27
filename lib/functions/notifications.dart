@@ -27,7 +27,6 @@ var androidDetails = const AndroidNotificationDetails(
   'normal_notification',
   enableVibration: true,
   enableLights: true,
-  
   importance: Importance.high,
   playSound: true,
   priority: Priority.high,
@@ -49,7 +48,7 @@ var iosInit = const DarwinInitializationSettings(
 );
 var initSetting = InitializationSettings(android: androiInit, iOS: iosInit);
 
-Future<void>initMessaging() async {
+Future<void> initMessaging() async {
   await fltNotification.initialize(initSetting);
 
   await FirebaseMessaging.instance.requestPermission();

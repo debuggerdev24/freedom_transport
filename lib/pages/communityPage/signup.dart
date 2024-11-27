@@ -1,3 +1,8 @@
+import 'dart:async';
+import 'dart:developer';
+import 'dart:io';
+
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_user/functions/functions.dart';
 import 'package:flutter_user/pages/communityPage/onbording.dart';
@@ -7,20 +12,31 @@ import 'package:flutter_user/pages/informationsPage/services/api_service.dart';
 import 'package:flutter_user/pages/onTripPage/invoice.dart';
 import 'package:flutter_user/pages/onTripPage/map_page.dart';
 import 'package:flutter_user/styles/styles.dart';
+import 'package:flutter_user/translations/translation.dart';
 import 'package:flutter_user/widgets/widgets.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 GlobalKey<FormState> _formKey = GlobalKey();
 
 Map<String, dynamic> requestData = {};
+dynamic proImageFile1;
+ImagePicker picker = ImagePicker();
+bool pickImage = false;
+late StreamController profilepicturecontroller;
+StreamSink get profilepicturesink => profilepicturecontroller.sink;
+Stream get profilepicturestream => profilepicturecontroller.stream;
 TextEditingController _txtEmail = TextEditingController();
 TextEditingController _txtPhone = TextEditingController();
-TextEditingController _txtCountryCode = TextEditingController();
+TextEditingController _txtCountryCode = TextEditingController(text: "+61");
 TextEditingController _txtFirstName = TextEditingController();
 TextEditingController _txtLastName = TextEditingController();
 TextEditingController _txtEmailPassword = TextEditingController();
 TextEditingController _txtReTypePassword = TextEditingController();
 
 Map<String, dynamic> userDetails = {};
+bool showPassword = false;
+bool _retypepassword = false;
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -31,203 +47,480 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   @override
-  navigate(verify) {
-    if (verify == true) {
-      if (userRequestData.isNotEmpty && userRequestData['is_completed'] == 1) {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => const Invoice()),
-            (route) => false);
-      } else {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => const Maps()),
-            (route) => false);
-      }
-    } else if (verify == false) {
-      setState(() {});
-    } else {}
-    loginLoading = false;
-    valueNotifierLogin.incrementNotifier();
+  void initState() {
+    super.initState();
+    proImageFile1 = null;
+    profilepicturecontroller = StreamController.broadcast();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  getGalleryPermission() async {
+    dynamic status;
+    if (platform == TargetPlatform.android) {
+      final androidInfo = await DeviceInfoPlugin().androidInfo;
+      if (androidInfo.version.sdkInt <= 32) {
+        status = await Permission.storage.status;
+        if (status != PermissionStatus.granted) {
+          status = await Permission.storage.request();
+        }
+      } else {
+        status = await Permission.photos.status;
+        if (status != PermissionStatus.granted) {
+          status = await Permission.photos.request();
+        }
+      }
+    } else {
+      status = await Permission.photos.status;
+      if (status != PermissionStatus.granted) {
+        status = await Permission.photos.request();
+      }
+    }
+    return status;
+  }
+
+  getCameraPermission() async {
+    var status = await Permission.camera.status;
+    if (status != PermissionStatus.granted) {
+      status = await Permission.camera.request();
+    }
+    return status;
+  }
+
+  pickImageFromGallery() async {
+    var permission = await getGalleryPermission();
+    if (permission == PermissionStatus.granted) {
+      final pickedFile =
+          await picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
+      log("pickfile ======>${pickedFile!.path}");
+      if (pickedFile != null) {
+        setState(() {
+          proImageFile1 = pickedFile.path;
+        });
+      }
+      pickImage = false;
+      valueNotifierLogin.incrementNotifier();
+      profilepicturesink.add('');
+    } else {
+      valueNotifierLogin.incrementNotifier();
+      profilepicturesink.add('');
+    }
+  }
+
+  pickImageFromCamera() async {
+    var permission = await getCameraPermission();
+    if (permission == PermissionStatus.granted) {
+      final pickedFile =
+          await picker.pickImage(source: ImageSource.camera, imageQuality: 50);
+
+      proImageFile1 = pickedFile?.path;
+      pickImage = false;
+      valueNotifierLogin.incrementNotifier();
+      profilepicturesink.add('');
+    } else {
+      valueNotifierLogin.incrementNotifier();
+      profilepicturesink.add('');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    _txtCountryCode.text = "+91";
     var media = MediaQuery.of(context).size;
     return Scaffold(
       body: Form(
         key: _formKey,
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 90),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                MyText(
-                  textAlign: TextAlign.center,
-                  text: "Welcome!",
-                  size: media.height * 0.020,
-                  color: textColor,
-                ),
-                MyText(
-                  textAlign: TextAlign.center,
-                  text: "Create an Account",
-                  size: media.height * 0.040,
-                  fontweight: FontWeight.w400,
-                  color: textColor,
-                ),
-                SizedBox(
-                  height: media.width * 0.09,
-                ),
-                InputInformation(
-                    title: "*First name",
-                    controller: _txtFirstName,
-                    boldTitle: true,
-                    emptyValidation: true),
-                SizedBox(
-                  height: media.width * 0.02,
-                ),
-                InputInformation(
-                    title: "*Last name",
-                    controller: _txtLastName,
-                    boldTitle: true,
-                    emptyValidation: true),
-                SizedBox(
-                  height: media.width * 0.02,
-                ),
-                InputInformation(
-                    title: "*Email address",
-                    controller: _txtEmail,
-                    emailValidation: true,
-                    boldTitle: true,
-                    emptyValidation: true),
-                SizedBox(
-                  height: media.width * 0.02,
-                ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    textAlign: TextAlign.start,
-                    "*Mobile Number",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: media.height * 0.02,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 2),
-                CustomMobileNumberField(mobileController: _txtPhone),
-                SizedBox(
-                  height: media.width * 0.02,
-                ),
-                InputInformation(
-                  title: "*Password",
-                  controller: _txtEmailPassword,
-                  boldTitle: true,
-                  passwordValidation: true,
-                  emptyValidation: true,
-                  obscureText: true,
-                ),
-                SizedBox(
-                  height: media.width * 0.02,
-                ),
-                InputInformation(
-                    title: "*Re-type passowrd",
-                    emptyValidation: true,
-                    obscureText: true,
-                    boldTitle: true,
-                    controller: _txtReTypePassword),
-                SizedBox(
-                  height: media.width * 0.1,
-                ),
-                Button(
-                    onTap: () async {
-                      if (_formKey.currentState!.validate()) {
-                        if (_txtEmailPassword.text == _txtReTypePassword.text) {
-                          requestData = {
-                            "name": _txtFirstName.text,
-                            "email": _txtEmail.text,
-                            "password": _txtEmailPassword.text,
-                            "last_name": _txtLastName.text,
-                            "country": _txtCountryCode.text,
-                            "mobile": _txtPhone.text,
-                            "terms_condition": true,
-                          };
-                          print("requestData=======>${requestData}");
-
-                          _txtFirstName.clear();
-                          _txtEmail.clear();
-                          _txtEmailPassword.clear();
-                          _txtLastName.clear();
-                          _txtCountryCode.clear();
-                          _txtPhone.clear();
-                          _txtReTypePassword.clear();
-
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const StepPageView(),
+        child: ValueListenableBuilder(
+            valueListenable: valueNotifierLogin.value,
+            builder: (context, value, child) {
+              return Stack(
+                children: [
+                  SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 90),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          MyText(
+                            textAlign: TextAlign.center,
+                            text: "Welcome!",
+                            size: media.height * 0.020,
+                            color: textColor,
+                          ),
+                          MyText(
+                            textAlign: TextAlign.center,
+                            text: "Create an Account",
+                            size: media.height * 0.040,
+                            fontweight: FontWeight.w400,
+                            color: textColor,
+                          ),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                pickImage = true;
+                              });
+                            },
+                            child: Stack(
+                              children: [
+                                Container(
+                                  height: media.width * 0.3,
+                                  width: media.width * 0.3,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white,
+                                      image: (proImageFile1 == null)
+                                          ? const DecorationImage(
+                                              image: AssetImage(
+                                                'assets/images/default-profile-picture.jpeg',
+                                              ),
+                                              fit: BoxFit.cover)
+                                          : DecorationImage(
+                                              image: FileImage(
+                                                  File(proImageFile1)),
+                                              fit: BoxFit.cover)),
+                                ),
+                                Positioned(
+                                    bottom: 6,
+                                    right: 3,
+                                    child: Container(
+                                        padding:
+                                            EdgeInsets.all(media.width * 0.030),
+                                        decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.grey),
+                                        child: Icon(
+                                          Icons.edit,
+                                          size: media.width * 0.035,
+                                        )))
+                              ],
                             ),
-                          );
-                        } else {
-                          showSnackBar(context, "Passwords do not match");
-                        }
-                      }
-                    },
-                    text: "Submit",
-                    color: theme,
-                    textcolor: buttonText,
-                    borderRadius: BorderRadius.circular(10),
-                    borcolor: theme),
-                SizedBox(
-                  height: media.width * 0.04,
-                ),
-                GestureDetector(
-                  onTap: () {},
-                  child: Text(
-                    'Forgot your password?',
-                    style: TextStyle(
-                      decorationColor: theme,
-                      decoration: TextDecoration.underline,
-                      fontSize: 14,
-                      color: theme,
+                          ),
+                          InputInformation(
+                              title: "*First name",
+                              controller: _txtFirstName,
+                              boldTitle: true,
+                              emptyValidation: true),
+                          SizedBox(
+                            height: media.width * 0.02,
+                          ),
+                          InputInformation(
+                              title: "*Last name",
+                              controller: _txtLastName,
+                              boldTitle: true,
+                              emptyValidation: true),
+                          SizedBox(
+                            height: media.width * 0.02,
+                          ),
+                          InputInformation(
+                              title: "*Email address",
+                              controller: _txtEmail,
+                              emailValidation: true,
+                              boldTitle: true,
+                              emptyValidation: true),
+                          SizedBox(
+                            height: media.width * 0.02,
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              textAlign: TextAlign.start,
+                              "*Mobile Number",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: media.height * 0.02,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          CustomMobileNumberField(mobileController: _txtPhone),
+                          SizedBox(
+                            height: media.width * 0.02,
+                          ),
+                          InputInformation(
+                            title: "*Password",
+                            controller: _txtEmailPassword,
+                            boldTitle: true,
+                            passwordValidation: true,
+                            emptyValidation: true,
+                            obscureText: !showPassword,
+                            suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    if (showPassword) {
+                                      showPassword = false;
+                                    } else {
+                                      showPassword = true;
+                                    }
+                                  });
+                                },
+                                icon: Icon(
+                                  Icons.remove_red_eye_sharp,
+                                  color: (showPassword == true)
+                                      ? const Color(0xff60b0b2)
+                                      : null,
+                                )),
+                          ),
+                          SizedBox(
+                            height: media.width * 0.02,
+                          ),
+                          InputInformation(
+                              title: "*Re-type passowrd",
+                              emptyValidation: true,
+                              obscureText: !_retypepassword,
+                              suffixIcon: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      if (_retypepassword) {
+                                        _retypepassword = false;
+                                      } else {
+                                        _retypepassword = true;
+                                      }
+                                    });
+                                  },
+                                  icon: Icon(
+                                    Icons.remove_red_eye_sharp,
+                                    color: (_retypepassword == true)
+                                        ? const Color(0xff60b0b2)
+                                        : null,
+                                  )),
+                              boldTitle: true,
+                              controller: _txtReTypePassword),
+                          SizedBox(
+                            height: media.width * 0.1,
+                          ),
+                          Button(
+                              onTap: () async {
+                                if (_formKey.currentState!.validate()) {
+                                  if (_txtEmailPassword.text ==
+                                      _txtReTypePassword.text) {
+                                    requestData = {
+                                      "name": _txtFirstName.text,
+                                      "email": _txtEmail.text,
+                                      "password": _txtEmailPassword.text,
+                                      "last_name": _txtLastName.text,
+                                      "country": _txtCountryCode.text,
+                                      "mobile": _txtPhone.text,
+                                      "terms_condition": 1,
+                                      "profile_picture": proImageFile1
+                                    };
+                                    log("requestData=======>${requestData}");
+
+                                    _txtFirstName.clear();
+                                    _txtEmail.clear();
+                                    _txtEmailPassword.clear();
+                                    _txtLastName.clear();
+                                    _txtPhone.clear();
+                                    _txtReTypePassword.clear();
+                                    proImageFile1 = null;
+
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const StepPageView(),
+                                      ),
+                                    );
+                                  } else {
+                                    showSnackBar(
+                                        context, "Passwords do not match");
+                                  }
+                                }
+                              },
+                              text: "Submit",
+                              color: theme,
+                              textcolor: buttonText,
+                              borderRadius: BorderRadius.circular(10),
+                              borcolor: theme),
+                          SizedBox(
+                            height: media.width * 0.04,
+                          ),
+                          GestureDetector(
+                            onTap: () {},
+                            child: Text(
+                              'Forgot your password?',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: media.height * 0.015,
+                                color: const Color(0xff7C7D7E),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: media.width * 0.02,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const SignInScreen(),
+                                ),
+                              );
+                            },
+                            child: RichText(
+                              text: TextSpan(
+                                text: "Already have an account?  ",
+                                style: TextStyle(
+                                    fontSize: media.height * 0.017,
+                                    color: const Color(0xff7C7D7E)),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: 'Sign In',
+                                    style: TextStyle(
+                                        fontSize: media.height * 0.017,
+                                        color: theme),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: media.width * 0.2,
-                ),
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Already have an account ?",
-                      style: TextStyle(fontSize: 14, color: Colors.grey),
-                    ),
-                  ],
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const SignInScreen()));
-                  },
-                  child: Text(
-                    'Sign in to your account',
-                    style: TextStyle(
-                      decorationColor: theme,
-                      decoration: TextDecoration.underline,
-                      fontSize: 14,
-                      color: theme,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+                  (pickImage == true)
+                      ? Positioned(
+                          bottom: 0,
+                          child: InkWell(
+                            onTap: () {
+                              setState(() {
+                                pickImage = false;
+                              });
+                            },
+                            child: Container(
+                              height: media.height * 1,
+                              width: media.width * 1,
+                              color: Colors.transparent.withOpacity(0.6),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.all(media.width * 0.05),
+                                    width: media.width * 1,
+                                    decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(25),
+                                            topRight: Radius.circular(25)),
+                                        border: Border.all(
+                                          color: borderLines,
+                                          width: 1.2,
+                                        ),
+                                        color: page),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          height: media.width * 0.02,
+                                          width: media.width * 0.15,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                                media.width * 0.01),
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: media.width * 0.05,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Column(
+                                              children: [
+                                                InkWell(
+                                                  onTap: () {
+                                                    pickImageFromCamera();
+                                                  },
+                                                  child: Container(
+                                                      height:
+                                                          media.width * 0.171,
+                                                      width:
+                                                          media.width * 0.171,
+                                                      decoration: BoxDecoration(
+                                                          border: Border.all(
+                                                              color:
+                                                                  borderLines,
+                                                              width: 1.2),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      12)),
+                                                      child: Icon(
+                                                        Icons
+                                                            .camera_alt_outlined,
+                                                        size:
+                                                            media.width * 0.064,
+                                                        color: textColor,
+                                                      )),
+                                                ),
+                                                SizedBox(
+                                                  height: media.width * 0.02,
+                                                ),
+                                                MyText(
+                                                  text:
+                                                      languages[choosenLanguage]
+                                                          ['text_camera'],
+                                                  size: media.width * ten,
+                                                  color: textColor
+                                                      .withOpacity(0.4),
+                                                )
+                                              ],
+                                            ),
+                                            Column(
+                                              children: [
+                                                InkWell(
+                                                  onTap: () {
+                                                    pickImageFromGallery();
+                                                  },
+                                                  child: Container(
+                                                      height:
+                                                          media.width * 0.171,
+                                                      width:
+                                                          media.width * 0.171,
+                                                      decoration: BoxDecoration(
+                                                          border: Border.all(
+                                                              color:
+                                                                  borderLines,
+                                                              width: 1.2),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      12)),
+                                                      child: Icon(
+                                                        Icons.image_outlined,
+                                                        size:
+                                                            media.width * 0.064,
+                                                        color: textColor,
+                                                      )),
+                                                ),
+                                                SizedBox(
+                                                  height: media.width * 0.02,
+                                                ),
+                                                MyText(
+                                                  text:
+                                                      languages[choosenLanguage]
+                                                          ['text_gallery'],
+                                                  size: media.width * ten,
+                                                  color: textColor
+                                                      .withOpacity(0.4),
+                                                )
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ))
+                      : Container(),
+                ],
+              );
+            }),
       ),
     );
   }

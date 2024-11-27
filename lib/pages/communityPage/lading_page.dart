@@ -15,7 +15,12 @@ class LadingPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.network(
-              "http://cms.freedomtransport.com.au/storage/uploadwebfrontfiles/oUS5sVVTmUDTzPutfWWD6rx9Uk9eCUEXu0E1XgOj.png"),
+            "http://cms.freedomtransport.com.au/storage/uploadwebfrontfiles/oUS5sVVTmUDTzPutfWWD6rx9Uk9eCUEXu0E1XgOj.png",
+            width: media.width * 0.9,
+          ),
+          SizedBox(
+            height: media.width * 0.05,
+          ),
           MyText(
             textAlign: TextAlign.center,
             text: "Welcome to Our community",
@@ -23,27 +28,27 @@ class LadingPage extends StatelessWidget {
             color: theme,
           ),
           SizedBox(
-            height: media.width * 0.2,
+            height: media.width * 0.20,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Image.network(
-                "https://media.licdn.com/dms/image/C4D0BAQFkL8o_7Rd5Zg/company-logo_200_200/0/1656464950465/niisq_agency_logo?e=2147483647&v=beta&t=fksBPChxw3lH5ghCH7dtzbgm2fPlXb9r3vjQuAzn6V8",
-                width: media.width * 0.2,
+              Image.asset(
+                "assets/images/niisq.png",
+                width: media.width * 0.3,
               ),
-              Image.network(
-                "https://lifetec.org.au/wp-content/uploads/2021/03/ndis-01.png",
-                width: media.width * 0.2,
+              Image.asset(
+                "assets/images/ndis.png",
+                width: media.width * 0.3,
               ),
-              Image.network(
-                "https://banner2.cleanpng.com/20180329/yzq/aviyg52z3.webp",
-                width: media.width * 0.1,
+              Image.asset(
+                "assets/images/private.png",
+                width: media.width * 0.2,
               ),
             ],
           ),
           SizedBox(
-            height: media.width * 0.1,
+            height: media.width * 0.20,
           ),
           Button(
             onTap: () {
@@ -59,7 +64,7 @@ class LadingPage extends StatelessWidget {
             borcolor: theme,
           ),
           SizedBox(
-            height: media.width * 0.1,
+            height: media.width * 0.05,
           ),
           Button(
             onTap: () {

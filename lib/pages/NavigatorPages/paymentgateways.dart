@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_user/functions/functions.dart';
 import 'package:flutter_user/pages/NavigatorPages/walletpage.dart';
@@ -29,6 +31,8 @@ class _PaymentGatwaysPageState extends State<PaymentGatwaysPage> {
     if (widget.from == '1') {
       paymentUrl =
           '${widget.url}?amount=$addMoney&payment_for=request&currency=${userRequestData['requested_currency_symbol']}&user_id=${userDetails['id'].toString()}&request_id=${userRequestData['id'].toString()}';
+
+      log("paymentUrl==========>${paymentUrl}");
     } else {
       paymentUrl =
           '${widget.url}?amount=$addMoney&payment_for=wallet&currency=${walletBalance['currency_symbol']}&user_id=${userDetails['id'].toString()}';
