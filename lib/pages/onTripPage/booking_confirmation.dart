@@ -3701,10 +3701,10 @@ class _BookingConfirmationState extends State<BookingConfirmation>
                                                                             (choosenVehicle != null && (widget.type == 1 || etaDetails[choosenVehicle]['enable_bidding'] == null || etaDetails[choosenVehicle]['enable_bidding'] == false) && widget.type != 2 && isOneWayTrip == true)
                                                                                 ? InkWell(
                                                                                     onTap: () {
-                                                                                      // setState(() {
-                                                                                      //   addCoupon =
-                                                                                      //       true;
-                                                                                      // });
+                                                                                      setState(() {
+                                                                                        addCoupon =
+                                                                                            true;
+                                                                                      });
 
                                                                                       showModalBottomSheet(
                                                                                           context: context,

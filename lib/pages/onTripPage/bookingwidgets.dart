@@ -2492,11 +2492,11 @@ class _ChoosePaymentMethodContainerState
               topRight: Radius.circular(media.width * 0.05))),
       child: Column(
         children: [
-          MyText(
-            text: languages[choosenLanguage]['text_choose_payment'],
-            size: media.width * sixteen,
-            fontweight: FontWeight.bold,
-          ),
+          // MyText(
+          //   text: languages[choosenLanguage]['text_choose_payment'],
+          //   size: media.width * sixteen,
+          //   fontweight: FontWeight.bold,
+          // ),
           SizedBox(
             height: media.width * 0.03,
           ),
@@ -2583,7 +2583,8 @@ class _ChoosePaymentMethodContainerState
                                                               fit: BoxFit
                                                                   .contain,
                                                             )
-                                                          : Container(),
+                                                          : Container(
+                                                            ),
                                         ),
                                         SizedBox(
                                           width: media.width * 0.02,

@@ -247,7 +247,7 @@ class _NIISQInformationState extends State<NIISQInformation> {
                             ];
 
                             print(requestData);
-                           
+
                             if (privateTransport) {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
@@ -258,6 +258,7 @@ class _NIISQInformationState extends State<NIISQInformation> {
                             } else {
                               await ApiService.apiService
                                   .sendUserDataToApi(requestData, context);
+                              _clearFormData();
                             }
                           },
                         ),

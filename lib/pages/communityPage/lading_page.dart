@@ -35,20 +35,20 @@ class LadingPage extends StatelessWidget {
             children: [
               Image.asset(
                 "assets/images/niisq.png",
-                width: media.width * 0.3,
+                width: media.width * 0.40,
               ),
               Image.asset(
                 "assets/images/ndis.png",
-                width: media.width * 0.3,
+                width: media.width * 0.30,
               ),
               Image.asset(
                 "assets/images/private.png",
-                width: media.width * 0.2,
+                width: media.width * 0.30,
               ),
             ],
           ),
           SizedBox(
-            height: media.width * 0.20,
+            height: media.width * 0.10,
           ),
           Button(
             onTap: () {

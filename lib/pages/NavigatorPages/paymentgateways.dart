@@ -37,6 +37,7 @@ class _PaymentGatwaysPageState extends State<PaymentGatwaysPage> {
       paymentUrl =
           '${widget.url}?amount=$addMoney&payment_for=wallet&currency=${walletBalance['currency_symbol']}&user_id=${userDetails['id'].toString()}';
     }
+    log("paymentUrl23==========>${paymentUrl}");
     late final PlatformWebViewControllerCreationParams params;
 
     params = const PlatformWebViewControllerCreationParams();

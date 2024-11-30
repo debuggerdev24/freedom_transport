@@ -33,10 +33,12 @@ TextEditingController _txtFirstName = TextEditingController();
 TextEditingController _txtLastName = TextEditingController();
 TextEditingController _txtEmailPassword = TextEditingController();
 TextEditingController _txtReTypePassword = TextEditingController();
+final TextEditingController _newPassword = TextEditingController();
 
 Map<String, dynamic> userDetails = {};
 bool showPassword = false;
 bool _retypepassword = false;
+bool newPassword = false;
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -338,20 +340,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             height: media.width * 0.04,
                           ),
                           GestureDetector(
-                            onTap: () {},
-                            child: Text(
-                              'Forgot your password?',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: media.height * 0.015,
-                                color: const Color(0xff7C7D7E),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: media.width * 0.02,
-                          ),
-                          GestureDetector(
                             onTap: () {
                               Navigator.pushReplacement(
                                 context,
@@ -361,15 +349,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               );
                             },
                             child: RichText(
+                              textAlign: TextAlign.center,
                               text: TextSpan(
-                                text: "Already have an account?  ",
+                                text: "Already have an account? \n ",
                                 style: TextStyle(
                                     fontSize: media.height * 0.017,
                                     color: const Color(0xff7C7D7E)),
                                 children: <TextSpan>[
                                   TextSpan(
-                                    text: 'Sign In',
+                                    text: 'Sign In to your account',
                                     style: TextStyle(
+                                        decoration: TextDecoration.underline,
                                         fontSize: media.height * 0.017,
                                         color: theme),
                                   ),

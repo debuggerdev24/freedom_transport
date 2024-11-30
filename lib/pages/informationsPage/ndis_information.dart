@@ -296,7 +296,6 @@ class _NDISInformationState extends State<NDISInformation> {
                     if (!_formKey.currentState!.validate()) {
                       showSnackBar(
                           context, "Please fill all the required fields.");
-
                       return;
                     }
 
@@ -324,7 +323,6 @@ class _NDISInformationState extends State<NDISInformation> {
 
                     log("ndisdetails======>${requestData}");
 
-                
                     if (agedCareTransport) {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => const AgedCareInformation()));
@@ -337,6 +335,7 @@ class _NDISInformationState extends State<NDISInformation> {
                     } else {
                       await ApiService.apiService
                           .sendUserDataToApi(requestData, context);
+                      _clearFormData();
                     }
                   },
                 ),
@@ -359,7 +358,7 @@ class _NDISInformationState extends State<NDISInformation> {
     _hasHealthCondition = false;
     _planType.isNotEmpty;
     agedCareTransport = false;
-    niisqTransport = false;
+    niisqTransport = true;
     privateTransport = false;
   }
 }

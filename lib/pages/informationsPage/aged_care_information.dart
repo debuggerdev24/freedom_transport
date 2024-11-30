@@ -344,6 +344,7 @@ class _AgedCareInformationState extends State<AgedCareInformation> {
                     } else {
                       await ApiService.apiService
                           .sendUserDataToApi(requestData, context);
+                      _clearFormData();
                     }
                   },
                 ),
@@ -353,5 +354,21 @@ class _AgedCareInformationState extends State<AgedCareInformation> {
         ),
       ),
     );
+  }
+
+  Future<void> _clearFormData() async {
+    _txtAgedCareNumber.clear();
+    _txtServiceProvideName.clear();
+    _selectedCareLevel.isNotEmpty;
+    _txtEmail.clear();
+    _txtName.clear();
+    _txtPhone.clear();
+    _txtOtherInformation.clear();
+    _isChspSupport = false;
+    _hasHealthCondition = false;
+    _isAgedCareParticipant = false;
+    agedCareTransport = false;
+    niisqTransport = true;
+    privateTransport = false;
   }
 }

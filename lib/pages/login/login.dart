@@ -395,22 +395,22 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                 clipper: ShapePainterBottom(),
                                 child: GestureDetector(
                                   onTap: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                SignInScreen()));
-                                    setState(() {
-                                      if (showSignin == false) {
-                                        showSignin = true;
-                                      }
-                                    });
-                                  },
-                                  onVerticalDragStart: (v) {
-                                    setState(() {
-                                      if (showSignin == false) {
-                                        showSignin = true;
-                                      }
-                                    });
+                                  //   Navigator.of(context).push(
+                                  //       MaterialPageRoute(
+                                  //           builder: (context) =>
+                                  //               SignInScreen()));
+                                  //   setState(() {
+                                  //     if (showSignin == false) {
+                                  //       showSignin = true;
+                                  //     }
+                                  //   });
+                                  // },
+                                  // onVerticalDragStart: (v) {
+                                  //   setState(() {
+                                  //     if (showSignin == false) {
+                                  //       showSignin = true;
+                                  //     }
+                                  //   });
                                   },
                                   child: Container(
                                     decoration: BoxDecoration(
@@ -2547,7 +2547,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                                                       title:
                                                                           'Otp for Login',
                                                                       body:
-                                                                          'Login to your account with test OTP 123456');
+                                                                          'Login to your account with test OTP');
                                                               showOtpNotification(
                                                                   noti);
                                                             }

@@ -1072,7 +1072,8 @@ class _InvoiceState extends State<Invoice> {
                                                     ? 'cash'
                                                     : '';
                                             _choosePaymentMethod = true;
-                                          });
+                                          }
+                                          );
                                         } else {
                                           Navigator.push(
                                               context,

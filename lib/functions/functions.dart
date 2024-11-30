@@ -634,7 +634,7 @@ acceptRequest(body) async {
   }
 }
 
-updatePassword(email, password, loginby) async {
+Future<dynamic> updatePassword(email, password, loginby) async {
   dynamic result;
 
   try {
@@ -644,6 +644,7 @@ updatePassword(email, password, loginby) async {
       if (loginby == false) 'mobile': email,
       'password': password
     });
+    d.log("response======>${response.body}");
     if (response.statusCode == 200) {
       if (jsonDecode(response.body)['success'] == true) {
         result = true;
@@ -1523,7 +1524,9 @@ List etaDetails = [];
 
 etaRequest({transport, outstation}) async {
   etaDetails.clear();
+
   dynamic result;
+
   try {
     var response = await http.post(Uri.parse('${url}api/v1/request/eta'),
         headers: {
@@ -1621,8 +1624,12 @@ etaRequest({transport, outstation}) async {
                     'is_outstation': outstation
                   }));
 
+    d.log("response.body========>${response.body}");
+
     if (response.statusCode == 200) {
       etaDetails = jsonDecode(response.body)['data'];
+
+
       choosenVehicle = (etaDetails
               .where((element) => element['is_default'] == true)
               .isNotEmpty)
@@ -1634,7 +1641,7 @@ etaRequest({transport, outstation}) async {
     } else if (response.statusCode == 401) {
       result = 'logout';
     } else {
-      debugPrint(response.body);
+      debugPrint("response.body========>${response.body}");
       if (jsonDecode(response.body)['message'] ==
           "service not available with this location") {
         serviceNotAvailable = true;
@@ -4013,11 +4020,12 @@ sharewalletfun({mobile, role, amount}) async {
   return result;
 }
 
-sendOTPtoEmail(String email) async {
+Future<dynamic> sendOTPtoEmail(String email) async {
   dynamic result;
   try {
     var response = await http
         .post(Uri.parse('${url}api/v1/send-mail-otp'), body: {'email': email});
+    d.log("response========>${response.body}");
     if (response.statusCode == 200) {
       if (jsonDecode(response.body)['success'] == true) {
         result = 'success';
@@ -4044,13 +4052,13 @@ sendOTPtoEmail(String email) async {
   }
 }
 
-emailVerify(String email, otpNumber) async {
+Future<dynamic> emailVerify(String email, otpNumber) async {
   dynamic val;
   try {
     var response = await http.post(Uri.parse('${url}api/v1/validate-email-otp'),
         body: {"email": email, "otp": otpNumber});
 
-    debugPrint(response.statusCode.toString());
+    d.log("emailVerify========>${response.body}");
     if (response.statusCode == 200) {
       if (jsonDecode(response.body)['success'] == true) {
         val = 'success';

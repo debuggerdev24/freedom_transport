@@ -2,12 +2,15 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_user/functions/functions.dart';
+import 'package:flutter_user/pages/communityPage/forgot_password.dart';
+
 import 'package:flutter_user/pages/communityPage/signup.dart';
 import 'package:flutter_user/pages/informationsPage/components/my_textfield.dart';
 import 'package:flutter_user/pages/informationsPage/services/api_service.dart';
 import 'package:flutter_user/pages/onTripPage/invoice.dart';
 import 'package:flutter_user/pages/onTripPage/map_page.dart';
 import 'package:flutter_user/styles/styles.dart';
+import 'package:flutter_user/translations/translation.dart';
 import 'package:flutter_user/widgets/widgets.dart';
 import 'package:http/http.dart' as http;
 
@@ -21,6 +24,7 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   String _error = '';
   TextEditingController _txtEmail = TextEditingController();
+  TextEditingController _newpassword = TextEditingController();
   TextEditingController _txtPassword = TextEditingController();
   GlobalKey<FormState> _formKey2 = GlobalKey<FormState>();
   bool loginLoading = true;
@@ -163,7 +167,6 @@ class _SignInScreenState extends State<SignInScreen> {
 
                           navigate(val);
                         } else if (response.statusCode == 404) {
-                          // User does not exist
                           showSnackBar(
                               context, "User does not exist. Please sign up.");
                         } else if (response.statusCode == 422) {
@@ -193,7 +196,12 @@ class _SignInScreenState extends State<SignInScreen> {
                   height: media.width * 0.04,
                 ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ForgotPassword()));
+                  },
                   child: Text(
                     'Forgot your password?',
                     style: TextStyle(

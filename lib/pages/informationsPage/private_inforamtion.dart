@@ -140,9 +140,9 @@ class _PrivateInformationState extends State<PrivateInformation> {
                       }
                     ];
 
-                    _clearFormData();
                     ApiService.apiService
                         .sendUserDataToApi(requestData, context);
+                    _clearFormData();
                   },
                 ),
               ],

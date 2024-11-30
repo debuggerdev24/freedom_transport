@@ -16,7 +16,7 @@ class ApiService {
   ApiService._();
   static ApiService apiService = ApiService._();
 
-  Future sendUserDataToApi(
+  Future<dynamic> sendUserDataToApi(
       Map<String, dynamic> requestData, BuildContext context) async {
     clearToken();
     Uri uri = Uri.parse("${url}api/v1/user/register");
@@ -36,18 +36,16 @@ class ApiService {
               request.fields["$key[$nestedKey]"] = nestedValue.toString();
             });
           }
-        } else if (key == "user_niisq_details" &&
-            value is List) {
+        } else if (key == "user_niisq_details" && value is List) {
           // Flatten user_niisq_details
-           if (value.isNotEmpty && value[0] is Map<String, dynamic>) {
+          if (value.isNotEmpty && value[0] is Map<String, dynamic>) {
             value[0].forEach((nestedKey, nestedValue) {
               request.fields["$key[$nestedKey]"] = nestedValue.toString();
             });
           }
-        } else if (key == "user_private_details" &&
-              value is List) {
+        } else if (key == "user_private_details" && value is List) {
           // Flatten user_private_details
-           if (value.isNotEmpty && value[0] is Map<String, dynamic>) {
+          if (value.isNotEmpty && value[0] is Map<String, dynamic>) {
             value[0].forEach((nestedKey, nestedValue) {
               request.fields["$key[$nestedKey]"] = nestedValue.toString();
             });
@@ -65,39 +63,7 @@ class ApiService {
         }
       });
 
-      // Function to flatten a nested map into key-value pairs with a base key
-      // void flattenNestedFields(Map<String, dynamic> data, String baseKey,
-      //     Map<String, String> output) {
-      //   data.forEach((key, value) {
-      //     output["$baseKey[$key]"] = value.toString();
-      //   });
-      // }
-
-// Add requestData fields to request.fields
-      // requestData.forEach((key, value) {
-      //   if (key == "user_ndis_details" && value is List) {
-      //     // Handle user_ndis_details as a list with one object
-      //     if (value.isNotEmpty && value[0] is Map<String, dynamic>) {
-      //       flattenNestedFields(value[0], key, request.fields);
-      //     }
-      //   } else if (key == "user_aged_details" &&
-      //       value is Map<String, dynamic>) {
-      //     // Flatten user_aged_details
-      //     flattenNestedFields(value, key, request.fields);
-      //   } else if (key == "user_niisq_details" &&
-      //       value is Map<String, dynamic>) {
-      //     // Flatten user_niisq_details
-      //     flattenNestedFields(value, key, request.fields);
-      //   } else if (key == "user_private_details" &&
-      //       value is Map<String, dynamic>) {
-      //     // Flatten user_private_details
-      //     flattenNestedFields(value, key, request.fields);
-      //   } else {
-      //     // Add other fields normally
-      //     request.fields[key] = value.toString();
-      //   }
-      // });
-
+      
       log("prffile======>${requestData}");
 
       if (requestData["profile_picture"] != null) {
