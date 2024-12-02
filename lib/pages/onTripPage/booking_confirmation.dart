@@ -3552,6 +3552,8 @@ class _BookingConfirmationState extends State<BookingConfirmation>
                                                                                             child: Row(
                                                                                               children: [
                                                                                                 (etaDetails[choosenVehicle]['payment_type'].toString().split(',').toList()[payingVia] == 'cash')
+
+                                                                                                
                                                                                                     ? Image.asset(
                                                                                                         'assets/images/cash.png',
                                                                                                         width: media.width * 0.07,
