@@ -2492,11 +2492,11 @@ class _ChoosePaymentMethodContainerState
               topRight: Radius.circular(media.width * 0.05))),
       child: Column(
         children: [
-          // MyText(
-          //   text: languages[choosenLanguage]['text_choose_payment'],
-          //   size: media.width * sixteen,
-          //   fontweight: FontWeight.bold,
-          // ),
+          MyText(
+            text: languages[choosenLanguage]['text_choose_payment'],
+            size: media.width * sixteen,
+            fontweight: FontWeight.bold,
+          ),
           SizedBox(
             height: media.width * 0.03,
           ),
@@ -2510,7 +2510,11 @@ class _ChoosePaymentMethodContainerState
                           .toList()
                           .asMap()
                           .map((i, value) {
-                            return MapEntry(
+                            // Check if user is private
+                            bool isPrivate = userDetails['is_private'] ?? false;
+
+                            if (!isPrivate) {
+                              return MapEntry(
                                 i,
                                 InkWell(
                                   onTap: () {
@@ -2518,122 +2522,192 @@ class _ChoosePaymentMethodContainerState
                                       choosenInPopUp = i;
                                     });
                                   },
-                                  child: SizedBox(
-                                    height: media.width * 0.106,
-                                    width: media.width * 0.9,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Expanded(
-                                          flex: 2,
-                                          child: (etaDetails[choosenVehicle]
-                                                          ['payment_type']
-                                                      .toString()
-                                                      .split(',')
-                                                      .toList()[i] ==
-                                                  'cash')
-                                              ? Image.asset(
-                                                  'assets/images/cash.png',
-                                                  width: media.width * 0.05,
-                                                  height: media.width * 0.05,
-                                                  fit: BoxFit.contain,
-                                                )
-                                              : (etaDetails[choosenVehicle]
-                                                              ['payment_type']
-                                                          .toString()
-                                                          .split(',')
-                                                          .toList()[i] ==
-                                                      'wallet')
-                                                  ? Image.asset(
-                                                      'assets/images/wallet.png',
-                                                      width: media.width * 0.1,
-                                                      height: media.width * 0.1,
-                                                      fit: BoxFit.contain,
-                                                    )
-                                                  : (etaDetails[choosenVehicle][
-                                                                  'payment_type']
-                                                              .toString()
-                                                              .split(',')
-                                                              .toList()[i] ==
-                                                          'card')
-                                                      ? Image.asset(
-                                                          'assets/images/card.png',
-                                                          width:
-                                                              media.width * 0.1,
-                                                          height:
-                                                              media.width * 0.1,
-                                                          fit: BoxFit.contain,
-                                                        )
-                                                      : (etaDetails[choosenVehicle]
-                                                                      [
-                                                                      'payment_type']
-                                                                  .toString()
-                                                                  .split(',')
-                                                                  .toList()[i] ==
-                                                              'upi')
-                                                          ? Image.asset(
-                                                              'assets/images/upi.png',
-                                                              width:
-                                                                  media.width *
-                                                                      0.1,
-                                                              height:
-                                                                  media.width *
-                                                                      0.1,
-                                                              fit: BoxFit
-                                                                  .contain,
-                                                            )
-                                                          : Container(
-                                                            ),
-                                        ),
-                                        SizedBox(
-                                          width: media.width * 0.02,
-                                        ),
-                                        Expanded(
-                                          flex: 6,
-                                          child: MyText(
-                                            text: etaDetails[choosenVehicle]
-                                                    ['payment_type']
-                                                .toString()
-                                                .split(',')
-                                                .toList()[i],
-                                            size: media.width * fourteen,
-                                            color:
-                                                // (choosenInPopUp == i)
-                                                //     ? const Color(0xffFF0000)
-                                                //     :
-                                                (isDarkTheme == true)
-                                                    ? Colors.white
-                                                    : Colors.black,
-                                          ),
-                                        ),
-                                        Expanded(
-                                            child: Container(
-                                          height: media.width * 0.05,
-                                          width: media.width * 0.05,
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        height: media.width * 0.106,
+                                        width: media.width * 0.9,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Expanded(
+                                              flex: 2,
+                                              child: Image.asset(
+                                                'assets/images/invoice.png',
+                                                width: media.width * 0.1,
+                                                height: media.width * 0.1,
+                                                fit: BoxFit.contain,
+                                              ),
+                                            ),
+                                            SizedBox(width: media.width * 0.02),
+                                            Expanded(
+                                              flex: 6,
+                                              child: MyText(
+                                                text: "Invoice",
+                                                size: media.width * fourteen,
                                                 color: (isDarkTheme == true)
                                                     ? Colors.white
-                                                    : Colors.black),
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: Container(
-                                            height: media.width * 0.03,
-                                            width: media.width * 0.03,
-                                            decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: (choosenInPopUp == i)
-                                                    // ? const Color(0xffFF0000)
-                                                    ? theme
-                                                    : page),
-                                          ),
-                                        ))
-                                      ],
-                                    ),
+                                                    : Colors.black,
+                                              ),
+                                            ),
+                                            Expanded(
+                                                child: Container(
+                                              height: media.width * 0.05,
+                                              width: media.width * 0.05,
+                                              alignment: Alignment.center,
+                                              decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                    color: (isDarkTheme == true)
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                  ),
+                                                  shape: BoxShape.circle),
+                                              child: Container(
+                                                height: media.width * 0.03,
+                                                width: media.width * 0.03,
+                                                decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: (choosenInPopUp == i)
+                                                        // ? const Color(0xffFF0000)
+                                                        ? theme
+                                                        : page),
+                                              ),
+                                            ))
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(height: media.width * 0.03),
+                                    ],
                                   ),
-                                ));
+                                ),
+                              );
+                            }
+
+                            return MapEntry(
+                              i,
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    choosenInPopUp = i;
+                                  });
+                                },
+                                child: Column(
+                                  children: [
+                                    SizedBox(
+                                      height: media.width * 0.106,
+                                      width: media.width * 0.9,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Expanded(
+                                            flex: 2,
+                                            child: (etaDetails[choosenVehicle]
+                                                            ['payment_type']
+                                                        .toString()
+                                                        .split(',')[i] ==
+                                                    'cash')
+                                                ? Image.asset(
+                                                    'assets/images/cash.png',
+                                                    width: media.width * 0.05,
+                                                    height: media.width * 0.05,
+                                                    fit: BoxFit.contain,
+                                                  )
+                                                : (etaDetails[choosenVehicle]
+                                                                ['payment_type']
+                                                            .toString()
+                                                            .split(',')[i] ==
+                                                        'wallet')
+                                                    ? Image.asset(
+                                                        'assets/images/wallet.png',
+                                                        width:
+                                                            media.width * 0.1,
+                                                        height:
+                                                            media.width * 0.1,
+                                                        fit: BoxFit.contain,
+                                                      )
+                                                    : (etaDetails[choosenVehicle][
+                                                                    'payment_type']
+                                                                .toString()
+                                                                .split(
+                                                                    ',')[i] ==
+                                                            'card')
+                                                        ? Image.asset(
+                                                            'assets/images/card.png',
+                                                            width: media.width *
+                                                                0.1,
+                                                            height:
+                                                                media.width *
+                                                                    0.1,
+                                                            fit: BoxFit.contain,
+                                                          )
+                                                        : (etaDetails[choosenVehicle]
+                                                                        [
+                                                                        'payment_type']
+                                                                    .toString()
+                                                                    .split(
+                                                                        ',')[i] ==
+                                                                'upi')
+                                                            ? Image.asset(
+                                                                'assets/images/upi.png',
+                                                                width: media
+                                                                        .width *
+                                                                    0.1,
+                                                                height: media
+                                                                        .width *
+                                                                    0.1,
+                                                                fit: BoxFit
+                                                                    .contain,
+                                                              )
+                                                            : Container(),
+                                          ),
+                                          SizedBox(width: media.width * 0.02),
+                                          Expanded(
+                                            flex: 6,
+                                            child: MyText(
+                                              text: etaDetails[choosenVehicle]
+                                                      ['payment_type']
+                                                  .toString()
+                                                  .split(',')[i],
+                                              size: media.width * fourteen,
+                                              color: (isDarkTheme == true)
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                            ),
+                                          ),
+                                          Expanded(
+                                              child: Container(
+                                            height: media.width * 0.05,
+                                            width: media.width * 0.05,
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                  color: (isDarkTheme == true)
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                ),
+                                                shape: BoxShape.circle),
+                                            child: Container(
+                                              height: media.width * 0.03,
+                                              width: media.width * 0.03,
+                                              decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: (choosenInPopUp == i)
+                                                      // ? const Color(0xffFF0000)
+                                                      ? theme
+                                                      : page),
+                                            ),
+                                          ))
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(height: media.width * 0.03),
+                                    // Add Invoice option
+                                  ],
+                                ),
+                              ),
+                            );
                           })
                           .values
                           .toList(),
@@ -2850,7 +2924,9 @@ class _RideLaterBottomSheetState extends State<RideLaterBottomSheet> {
                     initialDateTime: DateTime.now().add(Duration(
                         minutes: int.parse(userDetails[
                             'user_can_make_a_ride_after_x_miniutes']))),
-                    maximumDate: DateTime.now().add(const Duration(days: 4)),
+                    maximumDate: DateTime.now().add(
+                      const Duration(days: 30 * 6),
+                    ),
                     onDateTimeChanged: (val) {
                       // setState(() {
                       choosenDateTime = val;
@@ -3119,12 +3195,31 @@ class VehicleInfoBottomSheet extends StatelessWidget {
                         height: width * 0.02,
                       ),
                       FareBreakupDetails(
-                          width: width,
-                          heading: 'Payment Types',
-                          value: (type != 1)
-                              ? etaDetails[i]['payment_type'].toString()
-                              : rentalOption[choosenVehicle]['payment_type']
-                                  .toString()),
+                        width: width,
+                        heading: 'Payment Types',
+                        value: (type != 1)
+                            ? (userDetails['is_private'] == true
+                                ? (etaDetails[i]['payment_type'].toString() ==
+                                        '1'
+                                    ? languages[choosenLanguage]['text_cash']
+                                    : (etaDetails[i]['payment_type']
+                                                .toString() ==
+                                            '2'
+                                        ? languages[choosenLanguage]
+                                            ['text_wallet']
+                                        : languages[choosenLanguage]
+                                            ['text_card']))
+                                : "Invoice")
+                            : (rentalOption[choosenVehicle]['payment_type']
+                                        .toString() ==
+                                    '1'
+                                ? languages[choosenLanguage]['text_cash']
+                                : (rentalOption[choosenVehicle]['payment_type']
+                                            .toString() ==
+                                        '2'
+                                    ? languages[choosenLanguage]['text_wallet']
+                                    : languages[choosenLanguage]['text_card'])),
+                      ),
                     ],
                   ),
                 )

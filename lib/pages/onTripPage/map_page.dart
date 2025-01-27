@@ -3,6 +3,7 @@
 import 'dart:math';
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer' as g;
 import 'dart:ui' as ui;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:uuid/uuid.dart';
@@ -231,7 +232,7 @@ class _MapsState extends State<Maps>
         await getBytesFromAsset('assets/images/deliveryicon.png', 40);
     deliveryIcon = BitmapDescriptor.fromBytes(deliveryIcons);
     final Uint8List bikeIcons =
-        await getBytesFromAsset('assets/images/bike.png', 40);
+        await getBytesFromAsset('assets/images/top-taxi.png', 40);
     bikeIcon = BitmapDescriptor.fromBytes(bikeIcons);
 
     permission = await geolocs.GeolocatorPlatform.instance.checkPermission();
@@ -606,6 +607,7 @@ class _MapsState extends State<Maps>
                                                               event) {
                                                         if (event.hasData) {
                                                           List driverData = [];
+
                                                           event.data!.snapshot
                                                               .children
                                                               // ignore: avoid_function_literals_in_foreach_calls
@@ -1082,7 +1084,7 @@ class _MapsState extends State<Maps>
                                                                                       ? 'assets/images/top-taxi.png'
                                                                                       : (myMarkers[k].markerId.toString().replaceAll('MarkerId(', '').replaceAll(')', '').split('#')[2].toString() == 'truck')
                                                                                           ? 'assets/images/deliveryicon.png'
-                                                                                          : 'assets/images/bike.png',
+                                                                                          : 'assets/images/top-taxi.png',
                                                                                 ),
                                                                               ),
                                                                             ),

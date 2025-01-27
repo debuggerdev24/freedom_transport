@@ -207,8 +207,10 @@ class _NIISQInformationState extends State<NIISQInformation> {
                               },
                               activeColor: theme,
                             ),
-                            const Text(
-                                "I confirm that the information provided is\n accurate and up-to-date."),
+                            Text(
+                              "I confirm that the information provided is\n accurate and up-to-date.",
+                              style: TextStyle(color: verifyDeclined),
+                            ),
                           ],
                         ),
                         const Gap(15),
@@ -225,7 +227,12 @@ class _NIISQInformationState extends State<NIISQInformation> {
 
                             if ((!_isNIISQParticipant)) {
                               showSnackBar(context,
-                                  "You must select 'Yes' as an NDIS Participant to proceed.");
+                                  "You must select 'Yes' as Participant to proceed.");
+                              return;
+                            }
+                            if (!niisqTransport) {
+                              showSnackBar(
+                                  context, "You must confirm the information");
                               return;
                             }
 
@@ -299,5 +306,7 @@ class _NIISQInformationState extends State<NIISQInformation> {
     _txtOtherInformation.clear();
     _hasHealthCondition = false;
     _isNIISQParticipant = false;
+    niisqTransport = false;
+
   }
 }

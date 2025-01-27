@@ -62,9 +62,12 @@ Page resource error:
           },
           onNavigationRequest: (NavigationRequest request) {
             if (request.url.startsWith('${widget.url}/payment/success')) {
+              log("paymentsuccess==============>${widget.url}");
               setState(() {
                 pop = true;
                 _success = true;
+
+                log("_success==============>${_success}");
               });
             } else if (request.url.startsWith('${url}failure')) {
               setState(() {
@@ -80,6 +83,7 @@ Page resource error:
         ),
       )
       ..loadRequest(Uri.parse(paymentUrl));
+    log("paymwenturllll========>${paymentUrl}");
 
     _controller = controller;
     super.initState();
@@ -156,6 +160,7 @@ Page resource error:
                                 onTap: () {
                                   setState(() {
                                     _success = false;
+                                    log("success=======>${_success}");
                                     // super.detachFromGLContext();
                                     Navigator.pop(context, true);
                                   });

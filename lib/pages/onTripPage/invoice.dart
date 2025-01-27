@@ -1020,79 +1020,85 @@ class _InvoiceState extends State<Invoice> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               SizedBox(
-                                width: media.width * 0.4,
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      (userRequestData['payment_opt'] == '1')
-                                          ? languages[choosenLanguage]
-                                              ['text_cash']
-                                          : (userRequestData['payment_opt'] ==
-                                                  '2')
-                                              ? languages[choosenLanguage]
-                                                  ['text_wallet']
-                                              : languages[choosenLanguage]
-                                                  ['text_card'],
-                                      style: GoogleFonts.notoSans(
+                                  width: media.width * 0.4,
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        (userDetails['is_private'])
+                                            ? (userRequestData['payment_opt'] ==
+                                                    '1')
+                                                ? languages[choosenLanguage]
+                                                    ['text_cash']
+                                                : (userRequestData[
+                                                            'payment_opt'] ==
+                                                        '2')
+                                                    ? languages[choosenLanguage]
+                                                        ['text_wallet']
+                                                    : languages[choosenLanguage]
+                                                        ['text_card']
+                                            : "Invoice",
+                                        style: GoogleFonts.notoSans(
                                           fontSize: media.width * sixteen,
                                           color: buttonColor,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    MyText(
-                                      text:
-                                          ' ${userRequestData['requestBill']['data']['requested_currency_symbol']}',
-                                      size: media.width * fourteen,
-                                    ),
-                                    MyText(
-                                      text:
-                                          ' ${userRequestData['requestBill']['data']['total_amount']}',
-                                      size: media.width * twenty,
-                                      fontweight: FontWeight.bold,
-                                    ),
-                                  ],
-                                ),
-                              ),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      MyText(
+                                        text:
+                                            ' ${userRequestData['requestBill']['data']['requested_currency_symbol']}',
+                                        size: media.width * fourteen,
+                                      ),
+                                      MyText(
+                                        text:
+                                            ' ${userRequestData['requestBill']['data']['total_amount']}',
+                                        size: media.width * twenty,
+                                        fontweight: FontWeight.bold,
+                                      ),
+                                    ],
+                                  )),
                               SizedBox(
                                 width: media.width * 0.02,
                               ),
                               Expanded(
-                                  child: Button(
-                                      onTap: () async {
-                                        if (userRequestData['is_paid'] == 0 &&
-                                            userRequestData['payment_opt'] !=
-                                                '2') {
-                                          setState(() {
-                                            myPaymentMethod = userRequestData[
-                                                        'payment_opt'] ==
-                                                    '0'
-                                                ? 'card'
-                                                : userRequestData[
-                                                            'payment_opt'] ==
-                                                        '1'
-                                                    ? 'cash'
-                                                    : '';
-                                            _choosePaymentMethod = true;
-                                          }
-                                          );
-                                        } else {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const Review()));
-                                        }
-                                      },
-                                      text: (userRequestData['is_paid'] == 0 &&
-                                              userRequestData['payment_opt'] !=
-                                                  '2')
-                                          ? languages[choosenLanguage]
-                                              ['text_choose_payment']
-                                          : languages[choosenLanguage]
-                                              ['text_confirm'])),
+                                child: Button(
+                                  onTap: () async {
+                                    if (userDetails['is_private'] &&
+                                        userRequestData['is_paid'] == 0 &&
+                                        userRequestData['payment_opt'] != '2') {
+                                      setState(() {
+                                        myPaymentMethod = userRequestData[
+                                                    'payment_opt'] ==
+                                                '0'
+                                            ? 'card'
+                                            : userRequestData['payment_opt'] ==
+                                                    '1'
+                                                ? 'cash'
+                                                : '';
+                                        _choosePaymentMethod = true;
+                                      });
+                                    } else {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => const Review(),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  text: (userDetails['is_private'] &&
+                                          userRequestData['is_paid'] == 0 &&
+                                          userRequestData['payment_opt'] != '2')
+                                      ? languages[choosenLanguage]
+                                          ['text_choose_payment']
+                                      : languages[choosenLanguage]
+                                          ['text_confirm'],
+                                ),
+                              ),
                             ],
                           ),
                           if (userRequestData['is_paid'] == 0 &&
-                              userRequestData['payment_opt'] == '0')
+                              userRequestData['payment_opt'] == '0' &&
+                              userDetails['is_private'])
                             Column(
                               children: [
                                 SizedBox(

@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>404918018084-1ed2vph18nb0b27ppugn9ueabc6vsaa3.apps.googleusercontent.com</string>
+	<string>404918018084-f5gm484kkjp2q6pg3ee4ahh760rroh5f.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.404918018084-1ed2vph18nb0b27ppugn9ueabc6vsaa3</string>
+	<string>com.googleusercontent.apps.404918018084-f5gm484kkjp2q6pg3ee4ahh760rroh5f</string>
 	<key>ANDROID_CLIENT_ID</key>
-	<string>404918018084-ukppfqaoaqbakk5te57ms6j8ike9r6t6.apps.googleusercontent.com</string>
+	<string>404918018084-fqsq61ndh6c4isvogndbulc5s1hqldkl.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyCpb_4z0yaIfBIYXa-odeMNxEXvg6GVzEE</string>
 	<key>GCM_SENDER_ID</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.freedomtransport.vr</string>
+	<string>com.freedomtransport.app</string>
 	<key>PROJECT_ID</key>
 	<string>freedom-transport-4db68vr</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,7 +31,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:404918018084:ios:4ed7a47597c13d1665b8b1</string>
+	<string>1:404918018084:ios:9d030f1f477b550265b8b1</string>
 	<key>DATABASE_URL</key>
 	<string>https://freedom-transport-4db68vr-default-rtdb.asia-southeast1.firebasedatabase.app</string>
 </dict>

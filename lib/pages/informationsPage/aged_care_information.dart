@@ -288,8 +288,10 @@ class _AgedCareInformationState extends State<AgedCareInformation> {
                               },
                               activeColor: theme,
                             ),
-                            const Text(
-                                "I confirm that the information provided is\n accurate and up-to-date."),
+                            Text(
+                              "I confirm that the information provided is\n accurate and up-to-date.",
+                              style: TextStyle(color: verifyDeclined),
+                            ),
                           ],
                         ),
                         const Gap(15),
@@ -310,7 +312,13 @@ class _AgedCareInformationState extends State<AgedCareInformation> {
                     if ((_isAgedCareParticipant == null ||
                         !_isAgedCareParticipant)) {
                       showSnackBar(context,
-                          "You must select 'Yes' as an Aged Care Participant to proceed.");
+                          "You must select 'Yes' as Participant to proceed.");
+                      return;
+                    }
+
+                    if (!_agecaretransport) {
+                      showSnackBar(context,
+                          "You must confirm the information by checking the box.");
                       return;
                     }
 
@@ -359,7 +367,8 @@ class _AgedCareInformationState extends State<AgedCareInformation> {
   Future<void> _clearFormData() async {
     _txtAgedCareNumber.clear();
     _txtServiceProvideName.clear();
-    _selectedCareLevel.isNotEmpty;
+    _selectedCareLevel.isEmpty;
+    _txtAgedHealthInformation.clear();
     _txtEmail.clear();
     _txtName.clear();
     _txtPhone.clear();
@@ -367,8 +376,6 @@ class _AgedCareInformationState extends State<AgedCareInformation> {
     _isChspSupport = false;
     _hasHealthCondition = false;
     _isAgedCareParticipant = false;
-    agedCareTransport = false;
-    niisqTransport = true;
-    privateTransport = false;
+    _agecaretransport = false;
   }
 }

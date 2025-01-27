@@ -569,7 +569,7 @@ class _CustomMobileNumberFieldState extends State<CustomMobileNumberField> {
                 if (value == null || value.trim().isEmpty) {
                   return "* This field is required!";
                 }
-                final mobileRegex = RegExp(r'^\d{10}$');
+                final mobileRegex = RegExp(r'^\d{9,10}$');
                 if (!mobileRegex.hasMatch(value)) {
                   return "Please enter a valid mobile number";
                 }

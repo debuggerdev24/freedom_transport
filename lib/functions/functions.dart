@@ -9,6 +9,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_user/functions/notifications.dart';
+import 'package:flutter_user/pages/communityPage/signup.dart';
 import 'package:flutter_user/translations/translation.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
@@ -425,10 +426,7 @@ registerUser() async {
         http.MultipartRequest('POST', Uri.parse('${url}api/v1/user/register'));
 
     response.headers.addAll({'Content-Type': 'application/json'});
-    if (proImageFile1 != null) {
-      response.files.add(
-          await http.MultipartFile.fromPath('profile_picture', proImageFile1));
-    }
+
     response.fields.addAll({
       "name": name,
       "mobile": phnumber,
@@ -802,6 +800,9 @@ getUserDetails({id}) async {
         }
 
         userRequestData = userDetails['onTripRequest']['data'];
+        d.log("setted userRequestData");
+        d.log(
+            "userDetails['onTripRequest']['data'] ===>>> ${userDetails['onTripRequest']['data']}");
         if (userRequestData['is_driver_arrived'] == 1 && polyline.isEmpty) {
           polyGot = true;
           getPolylines('', '', '', '');
@@ -876,6 +877,8 @@ getUserDetails({id}) async {
       } else if (userDetails['metaRequest'] != null) {
         addressList.clear();
         userRequestData = userDetails['metaRequest']['data'];
+        d.log(
+            "userDetails['metaRequest']['data']==========>${userDetails['metaRequest']['data']}");
         tripStops = userDetails['metaRequest']['data']['requestStops']['data'];
         addressList.add(AddressList(
             id: '1',
@@ -984,8 +987,6 @@ class BearerClass {
 
   Map<String, dynamic> toJson() => {'type': type, 'token': token};
 }
-
-Map<String, dynamic> driverReq = {};
 
 class ValueNotifying {
   ValueNotifier value = ValueNotifier(0);
@@ -1521,21 +1522,13 @@ class DropStops {
 List etaDetails = [];
 
 //eta request
-
 etaRequest({transport, outstation}) async {
   etaDetails.clear();
-
   dynamic result;
 
   try {
-    var response = await http.post(Uri.parse('${url}api/v1/request/eta'),
-        headers: {
-          'Authorization': 'Bearer ${bearerToken[0].token}',
-          'Content-Type': 'application/json',
-        },
-        body: (addressList
-                    .where((element) => element.type == 'drop')
-                    .isNotEmpty &&
+    var requestBody =
+        (addressList.where((element) => element.type == 'drop').isNotEmpty &&
                 dropStopList.isEmpty)
             ? jsonEncode({
                 'pick_lat': (userRequestData.isNotEmpty)
@@ -1568,7 +1561,8 @@ etaRequest({transport, outstation}) async {
                         ? 'taxi'
                         : 'delivery'
                     : transport,
-                'is_outstation': outstation
+                'is_outstation': outstation,
+                'username': userDetails['id']
               })
             : (dropStopList.isNotEmpty &&
                     addressList
@@ -1603,7 +1597,8 @@ etaRequest({transport, outstation}) async {
                     'ride_type': 1,
                     'transport_type':
                         (choosenTransportType == 0) ? 'taxi' : 'delivery',
-                    'is_outstation': outstation
+                    'is_outstation': outstation,
+                    'username': userDetails['id']
                   })
                 : jsonEncode({
                     'pick_lat': (userRequestData.isNotEmpty)
@@ -1621,14 +1616,21 @@ etaRequest({transport, outstation}) async {
                     'ride_type': 1,
                     'transport_type':
                         (choosenTransportType == 0) ? 'taxi' : 'delivery',
-                    'is_outstation': outstation
-                  }));
+                    'is_outstation': outstation,
+                    'username': userDetails['id']
+                  });
 
-    d.log("response.body========>${response.body}");
+    d.log("Request Body: $requestBody");
+
+    var response = await http.post(Uri.parse('${url}api/v1/request/eta'),
+        headers: {
+          'Authorization': 'Bearer ${bearerToken[0].token}',
+          'Content-Type': 'application/json',
+        },
+        body: requestBody);
 
     if (response.statusCode == 200) {
       etaDetails = jsonDecode(response.body)['data'];
-
 
       choosenVehicle = (etaDetails
               .where((element) => element['is_default'] == true)
@@ -1641,12 +1643,13 @@ etaRequest({transport, outstation}) async {
     } else if (response.statusCode == 401) {
       result = 'logout';
     } else {
-      debugPrint("response.body========>${response.body}");
+      debugPrint("response123.body========>${response.body}");
       if (jsonDecode(response.body)['message'] ==
           "service not available with this location") {
         serviceNotAvailable = true;
       }
       result = false;
+      d.log("result============>${result}");
     }
     return result;
   } catch (e) {
@@ -1738,6 +1741,8 @@ etaRequestWithPromo({outstation}) async {
 
     if (response.statusCode == 200) {
       etaDetails = jsonDecode(response.body)['data'];
+
+      d.log("etadertails==========>${etaDetails.length}");
       promoCode = '';
       promoStatus = 1;
       valueNotifierBook.incrementNotifier();
@@ -1790,6 +1795,7 @@ rentalEta() async {
 
     if (response.statusCode == 200) {
       etaDetails = jsonDecode(response.body)['data'];
+      d.log("etadetails=========>${etaDetails}");
       rentalOption = etaDetails[0]['typesWithPrice']['data'];
       rentalChoosenOption = 0;
       choosenVehicle = 0;
@@ -1882,10 +1888,13 @@ createRequest(value, api) async {
           'Content-Type': 'application/json',
         },
         body: value);
+
     if (response.statusCode == 200) {
       userRequestData = jsonDecode(response.body)['data'];
+
       streamRequest();
       result = 'success';
+
       valueNotifierBook.incrementNotifier();
     } else if (response.statusCode == 401) {
       result = 'logout';
@@ -1896,6 +1905,8 @@ createRequest(value, api) async {
       } else {
         tripError = jsonDecode(response.body)['message'].toString();
         tripReqError = true;
+
+        d.log("triperorr===========>${tripError}");
       }
 
       result = 'failure';
@@ -1923,9 +1934,13 @@ createRequestLater(val, api) async {
           'Content-Type': 'application/json',
         },
         body: val);
+    d.log("url$api============>${api}");
+    d.log("value============>${val}");
+
     if (response.statusCode == 200) {
       result = 'success';
       userRequestData = jsonDecode(response.body)['data'];
+
       streamRequest();
       valueNotifierBook.incrementNotifier();
     } else if (response.statusCode == 401) {
@@ -3114,6 +3129,7 @@ getHistory() async {
     if (response.statusCode == 200) {
       myHistory = jsonDecode(response.body)['data'];
       myHistoryPage = jsonDecode(response.body)['meta'];
+      d.log("myHistory========>${response.body}");
       result = 'success';
       valueNotifierBook.incrementNotifier();
     } else if (response.statusCode == 401) {
@@ -3184,6 +3200,7 @@ getWalletHistory() async {
         headers: {'Authorization': 'Bearer ${bearerToken[0].token}'});
     if (response.statusCode == 200) {
       walletBalance = jsonDecode(response.body);
+      d.log("walletBalance===========>${walletBalance}");
       walletHistory = walletBalance['wallet_history']['data'];
       walletPages = walletBalance['wallet_history']['meta']['pagination'];
       paymentGateways = walletBalance['payment_gateways'];
@@ -3590,17 +3607,17 @@ updateProfile(name, email, usergender) async {
       response.files.add(await http.MultipartFile.fromPath(
           'profile_picture', profileImageFile));
     }
+
     response.fields['email'] = email;
     response.fields['name'] = name;
-    response.fields['gender'] = (gender == 'male')
-        ? 'male'
-        : (gender == 'female')
-            ? 'female'
-            : 'others';
+    response.fields['gender'] = usergender;
+    d.log("request ===========>${response.fields}");
     var request = await response.send();
+
     var respon = await http.Response.fromStream(request);
     final val = jsonDecode(respon.body);
     if (request.statusCode == 200) {
+      d.log("update profile ===========>${respon.body}");
       result = 'success';
       if (val['success'] == true) {
         await getUserDetails();
@@ -3638,12 +3655,14 @@ updateProfileWithoutImage(name, email, usergender) async {
         .addAll({'Authorization': 'Bearer ${bearerToken[0].token}'});
     response.fields['email'] = email;
     response.fields['name'] = name;
-    response.fields['gender'] = (gender == 'male')
+    response.fields['gender'] = (usergender == 'male')
         ? 'male'
-        : (gender == 'female')
+        : (usergender == 'female')
             ? 'female'
             : 'others';
     var request = await response.send();
+
+    d.log("request---------====>${response.fields}");
     var respon = await http.Response.fromStream(request);
     final val = jsonDecode(respon.body);
     if (request.statusCode == 200) {
@@ -3783,6 +3802,7 @@ streamRequest() {
   rideStreamUpdate = null;
   rideStreamStart = null;
 
+  d.log("addingh new requestStreamStart");
   requestStreamStart = FirebaseDatabase.instance
       .ref('request-meta')
       .child(userRequestData['id'])
@@ -3793,6 +3813,7 @@ streamRequest() {
     ismulitipleride = true;
     getUserDetails(id: userRequestData['id']);
     requestStreamEnd?.cancel();
+    d.log("requestStreamStart========>${userRequestData['id']}");
     requestStreamStart?.cancel();
   });
 }
@@ -3927,7 +3948,6 @@ getnotificationHistory() async {
 
 getNotificationPages(id) async {
   dynamic result;
-
   try {
     var response = await http.get(
         Uri.parse('${url}api/v1/notifications/get-notification?$id'),
@@ -3951,7 +3971,6 @@ getNotificationPages(id) async {
   } catch (e) {
     if (e is SocketException) {
       result = 'no internet';
-
       internet = false;
       valueNotifierHome.incrementNotifier();
     }
@@ -4104,6 +4123,8 @@ paymentMethod(payment) async {
                           ? 2
                           : 4
             }));
+
+    d.log("paymentmethod=======>${response.body}");
     if (response.statusCode == 200) {
       FirebaseDatabase.instance
           .ref('requests')

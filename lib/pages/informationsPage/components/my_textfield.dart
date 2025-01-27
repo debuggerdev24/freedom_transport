@@ -67,7 +67,8 @@ class _InputInformation extends State<InputInformation> {
                 return "* Indicates that field is required!";
               }
               // email validation
-              final emailRegex = RegExp(r'^[a-z0-9\.\-]+@gmail\.com$');
+              final emailRegex = RegExp(
+                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
               if (widget.emailValidation && !emailRegex.hasMatch(value!)) {
                 return "Please enter a valid email!";
               }
@@ -78,7 +79,7 @@ class _InputInformation extends State<InputInformation> {
               }
 
               //mobile validation
-              final mobileRegex = RegExp(r'^\d{10}$');
+              final mobileRegex = RegExp(r'^\d{9,10}$');
               if (widget.mobileValidation && !mobileRegex.hasMatch(value!)) {
                 return "Please enter a valid mobile number!";
               }

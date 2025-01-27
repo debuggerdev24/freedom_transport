@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'dart:developer' as d;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
@@ -232,6 +233,7 @@ class _BookingConfirmationState extends State<BookingConfirmation>
 //running timer
   timer() {
     if (userRequestData['is_bid_ride'] == 1) {
+      d.log("is_bid_ride");
       timers = Timer.periodic(const Duration(seconds: 1), (timer) {
         valueNotifierTimer.incrementNotifier();
       });
@@ -245,6 +247,8 @@ class _BookingConfirmationState extends State<BookingConfirmation>
                 userDetails['accepted_at'] == null &&
                 timing > 0) {
               timing--;
+              d.log("calling valueNotifierBook.incrementNotifier()",
+                  name: "booking_confirmation");
               valueNotifierBook.incrementNotifier();
             } else if (userRequestData.isNotEmpty &&
                 userRequestData['accepted_at'] == null &&
@@ -651,6 +655,8 @@ class _BookingConfirmationState extends State<BookingConfirmation>
 
     if (widget.type == 2 || isOutStation == true) {
       var val = await etaRequest(outstation: isOutStation);
+      d.log("value==============>${val}");
+
       if (val == 'logout') {
         navigateLogout();
       }
@@ -2509,7 +2515,8 @@ class _BookingConfirmationState extends State<BookingConfirmation>
                                                                           false;
                                                                       rentalOption =
                                                                           etaDetails[rentalChoosenOption]['typesWithPrice']
-                                                                          ['data'];
+                                                                              [
+                                                                              'data'];
                                                                       // rentalChoosenOption = i;
                                                                       choosenVehicle =
                                                                           null;
@@ -3548,55 +3555,64 @@ class _BookingConfirmationState extends State<BookingConfirmation>
                                                                                                 });
                                                                                           },
                                                                                           child: SizedBox(
-                                                                                            width: media.width * 0.3,
+                                                                                            width: media.width * 0.4,
                                                                                             child: Row(
                                                                                               children: [
-                                                                                                (etaDetails[choosenVehicle]['payment_type'].toString().split(',').toList()[payingVia] == 'cash')
-                                                                                                    ? Image.asset(
-                                                                                                        'assets/images/cash.png',
-                                                                                                        width: media.width * 0.07,
-                                                                                                        height: media.width * 0.7,
-                                                                                                        fit: BoxFit.contain,
-                                                                                                      )
-                                                                                                    : (etaDetails[choosenVehicle]['payment_type'].toString().split(',').toList()[payingVia] == 'wallet')
+                                                                                                userDetails['is_private'] ?? false
+                                                                                                    ? (etaDetails[choosenVehicle]['payment_type'].toString().split(',').toList()[payingVia] == 'cash')
                                                                                                         ? Image.asset(
-                                                                                                            'assets/images/wallet.png',
+                                                                                                            'assets/images/cash.png',
                                                                                                             width: media.width * 0.07,
                                                                                                             height: media.width * 0.07,
                                                                                                             fit: BoxFit.contain,
                                                                                                           )
-                                                                                                        : (etaDetails[choosenVehicle]['payment_type'].toString().split(',').toList()[payingVia] == 'card')
+                                                                                                        : (etaDetails[choosenVehicle]['payment_type'].toString().split(',').toList()[payingVia] == 'wallet')
                                                                                                             ? Image.asset(
-                                                                                                                'assets/images/card.png',
+                                                                                                                'assets/images/wallet.png',
                                                                                                                 width: media.width * 0.07,
                                                                                                                 height: media.width * 0.07,
                                                                                                                 fit: BoxFit.contain,
                                                                                                               )
-                                                                                                            : (etaDetails[choosenVehicle]['payment_type'].toString().split(',').toList()[payingVia] == 'upi')
+                                                                                                            : (etaDetails[choosenVehicle]['payment_type'].toString().split(',').toList()[payingVia] == 'card')
                                                                                                                 ? Image.asset(
-                                                                                                                    'assets/images/upi.png',
+                                                                                                                    'assets/images/card.png',
                                                                                                                     width: media.width * 0.07,
                                                                                                                     height: media.width * 0.07,
                                                                                                                     fit: BoxFit.contain,
                                                                                                                   )
-                                                                                                                : Container(),
+                                                                                                                : (etaDetails[choosenVehicle]['payment_type'].toString().split(',').toList()[payingVia] == 'upi')
+                                                                                                                    ? Image.asset(
+                                                                                                                        'assets/images/upi.png',
+                                                                                                                        width: media.width * 0.07,
+                                                                                                                        height: media.width * 0.07,
+                                                                                                                        fit: BoxFit.contain,
+                                                                                                                      )
+                                                                                                                    : Container()
+                                                                                                    : Image.asset(
+                                                                                                        'assets/images/invoice.png',
+                                                                                                        width: media.width * 0.07,
+                                                                                                        height: media.width * 0.07,
+                                                                                                        fit: BoxFit.contain,
+                                                                                                      ),
                                                                                                 SizedBox(
                                                                                                   width: media.width * 0.02,
                                                                                                 ),
                                                                                                 MyText(
-                                                                                                  text: (etaDetails[choosenVehicle]['payment_type'].toString().split(',').toList()[payingVia] == 'cash')
-                                                                                                      ? languages[choosenLanguage]['text_cash']
-                                                                                                      : (etaDetails[choosenVehicle]['payment_type'].toString().split(',').toList()[payingVia] == 'wallet')
-                                                                                                          ? languages[choosenLanguage]['text_wallet']
-                                                                                                          : (etaDetails[choosenVehicle]['payment_type'].toString().split(',').toList()[payingVia] == 'card')
-                                                                                                              ? languages[choosenLanguage]['text_card']
-                                                                                                              : languages[choosenLanguage]['text_upi'],
+                                                                                                  text: userDetails['is_private'] ?? false
+                                                                                                      ? (etaDetails[choosenVehicle]['payment_type'].toString().split(',').toList()[payingVia] == 'cash')
+                                                                                                          ? languages[choosenLanguage]['text_cash']
+                                                                                                          : (etaDetails[choosenVehicle]['payment_type'].toString().split(',').toList()[payingVia] == 'wallet')
+                                                                                                              ? languages[choosenLanguage]['text_wallet']
+                                                                                                              : (etaDetails[choosenVehicle]['payment_type'].toString().split(',').toList()[payingVia] == 'card')
+                                                                                                                  ? languages[choosenLanguage]['text_card']
+                                                                                                                  : languages[choosenLanguage]['text_upi']
+                                                                                                      : "Invoice",
                                                                                                   size: media.width * sixteen,
                                                                                                   fontweight: FontWeight.w600,
                                                                                                   color: (isDarkTheme == true) ? Colors.white : Colors.black,
                                                                                                 ),
                                                                                                 SizedBox(
-                                                                                                  width: media.width * 0.03,
+                                                                                                  width: media.width * 0.04,
                                                                                                 ),
                                                                                                 RotatedBox(
                                                                                                   quarterTurns: 1,
@@ -3605,7 +3621,7 @@ class _BookingConfirmationState extends State<BookingConfirmation>
                                                                                                     color: textColor,
                                                                                                     size: media.width * 0.03,
                                                                                                   ),
-                                                                                                )
+                                                                                                ),
                                                                                               ],
                                                                                             ),
                                                                                           ),
@@ -3702,8 +3718,7 @@ class _BookingConfirmationState extends State<BookingConfirmation>
                                                                                 ? InkWell(
                                                                                     onTap: () {
                                                                                       setState(() {
-                                                                                        addCoupon =
-                                                                                            true;
+                                                                                        addCoupon = true;
                                                                                       });
 
                                                                                       showModalBottomSheet(
@@ -3935,7 +3950,6 @@ class _BookingConfirmationState extends State<BookingConfirmation>
                                                                                             : media.width * 0.89,
                                                                                         onTap: () async {
                                                                                           if ((widget.type == 2) || (((rentalOption.isEmpty && (etaDetails[choosenVehicle]['user_wallet_balance'] >= etaDetails[choosenVehicle]['total'] && etaDetails[choosenVehicle]['has_discount'] == false) || (rentalOption.isEmpty && etaDetails[choosenVehicle]['has_discount'] == true && etaDetails[choosenVehicle]['user_wallet_balance'] >= etaDetails[choosenVehicle]['discounted_totel'])) || (rentalOption.isEmpty && etaDetails[choosenVehicle]['payment_type'].toString().split(',').toList()[payingVia] != 'wallet')) || ((rentalOption.isNotEmpty && (etaDetails[0]['user_wallet_balance'] >= rentalOption[choosenVehicle]['fare_amount']) && rentalOption[choosenVehicle]['has_discount'] == false) || (rentalOption.isNotEmpty && rentalOption[choosenVehicle]['has_discount'] == true && etaDetails[0]['user_wallet_balance'] >= rentalOption[choosenVehicle]['discounted_totel']) || rentalOption.isNotEmpty && rentalOption[choosenVehicle]['payment_type'].toString().split(',').toList()[payingVia] != 'wallet'))) {
-
                                                                                             if (((widget.type == null) ? (etaDetails[choosenVehicle]['enable_bidding'] == true) : false) || isOutStation) {
                                                                                               if (isOutStation) {
                                                                                                 if (isOneWayTrip && nofromdate) {
@@ -4455,6 +4469,8 @@ class _BookingConfirmationState extends State<BookingConfirmation>
                                                                                                                 'is_luggage_available': (addLuggagePreferences == false) ? false : true
                                                                                                               }),
                                                                                                               'api/v1/request/create');
+
+                                                                                                          d.log("resuluttttt=========>${result}");
                                                                                                         } else {
                                                                                                           result = await createRequest(
                                                                                                               (addressList.where((element) => element.type == 'drop').isNotEmpty)
@@ -5061,6 +5077,7 @@ class _BookingConfirmationState extends State<BookingConfirmation>
                                                             await etaRequest(
                                                                 outstation:
                                                                     isOutStation);
+
                                                         if (val == 'logout') {
                                                           navigateLogout();
                                                         }
@@ -5130,7 +5147,7 @@ class _BookingConfirmationState extends State<BookingConfirmation>
                                                       onTap: () {
                                                         setState(() {
                                                           islowwalletbalance =
-                                                             false;
+                                                              false;
                                                         });
                                                       },
                                                       text: languages[
@@ -5506,7 +5523,8 @@ class _BookingConfirmationState extends State<BookingConfirmation>
                                                                             .contain),
                                                                   ),
                                                                   SizedBox(
-                                                                    width: media.width *
+                                                                    width: media
+                                                                            .width *
                                                                         0.05,
                                                                   ),
                                                                   Expanded(
@@ -5526,7 +5544,8 @@ class _BookingConfirmationState extends State<BookingConfirmation>
                                                                                 hintText: languages[choosenLanguage]['text_enterpromo'],
                                                                                 hintStyle: GoogleFonts.notoSans(fontSize: media.width * twelve, color: hintColor)),
                                                                           )
-                                                                        : (promoStatus == 1)
+                                                                        : (promoStatus ==
+                                                                                1)
                                                                             ? Container(
                                                                                 padding: EdgeInsets.fromLTRB(0, media.width * 0.045, 0, media.width * 0.045),
                                                                                 child: Row(
@@ -6365,7 +6384,8 @@ class _BookingConfirmationState extends State<BookingConfirmation>
                                                           media.height * 0.02,
                                                     ),
                                                     Container(
-                                                      height: media.width * 0.048,
+                                                      height:
+                                                          media.width * 0.048,
                                                       width: media.width * 0.9,
                                                       decoration: BoxDecoration(
                                                           borderRadius:
@@ -6374,7 +6394,8 @@ class _BookingConfirmationState extends State<BookingConfirmation>
                                                                           .width *
                                                                       0.024),
                                                           color: Colors.grey),
-                                                      alignment: Alignment.centerLeft,
+                                                      alignment:
+                                                          Alignment.centerLeft,
                                                       child: Container(
                                                         height:
                                                             media.width * 0.048,
@@ -6402,13 +6423,15 @@ class _BookingConfirmationState extends State<BookingConfirmation>
                                                         (timing != null)
                                                             ? Text(
                                                                 '${Duration(seconds: timing).toString().substring(3, 7)} mins',
-                                                                style: GoogleFonts.notoSans(
-                                                                    fontSize:
-                                                                        media.width *
-                                                                            ten,
-                                                                    color: textColor
-                                                                        .withOpacity(
-                                                                            0.4),),
+                                                                style: GoogleFonts
+                                                                    .notoSans(
+                                                                  fontSize:
+                                                                      media.width *
+                                                                          ten,
+                                                                  color: textColor
+                                                                      .withOpacity(
+                                                                          0.4),
+                                                                ),
                                                               )
                                                             : Container()
                                                       ],
@@ -7394,31 +7417,34 @@ class _BookingConfirmationState extends State<BookingConfirmation>
                                                                               .start,
                                                                       children: [
                                                                         Expanded(
-                                                                          child:
-                                                                              Row(
-                                                                            children: [
-                                                                              (userRequestData['payment_opt'] == '1')
-                                                                                  ? Image.asset(
-                                                                                      'assets/images/cash.png',
-                                                                                      width: media.width * 0.07,
-                                                                                      height: media.width * 0.07,
-                                                                                      fit: BoxFit.contain,
-                                                                                    )
-                                                                                  : (userRequestData['payment_opt'] == '2')
-                                                                                      ? Image.asset(
-                                                                                          'assets/images/wallet.png',
-                                                                                          width: media.width * 0.07,
-                                                                                          height: media.width * 0.07,
-                                                                                          fit: BoxFit.contain,
-                                                                                        )
-                                                                                      : (userRequestData['payment_opt'] == '0')
-                                                                                          ? Image.asset(
-                                                                                              'assets/images/card.png',
-                                                                                              width: media.width * 0.07,
-                                                                                              height: media.width * 0.07,
-                                                                                              fit: BoxFit.contain,
-                                                                                            )
-                                                                                          : Container(),
+                                                                            child:
+                                                                                Row(
+                                                                          children: [
+                                                                            if (userDetails['is_private'] ??
+                                                                                false) ...[
+                                                                              if (userRequestData['payment_opt'] == '1')
+                                                                                Image.asset(
+                                                                                  'assets/images/cash.png',
+                                                                                  width: media.width * 0.07,
+                                                                                  height: media.width * 0.07,
+                                                                                  fit: BoxFit.contain,
+                                                                                )
+                                                                              else if (userRequestData['payment_opt'] == '2')
+                                                                                Image.asset(
+                                                                                  'assets/images/wallet.png',
+                                                                                  width: media.width * 0.07,
+                                                                                  height: media.width * 0.07,
+                                                                                  fit: BoxFit.contain,
+                                                                                )
+                                                                              else if (userRequestData['payment_opt'] == '0')
+                                                                                Image.asset(
+                                                                                  'assets/images/card.png',
+                                                                                  width: media.width * 0.07,
+                                                                                  height: media.width * 0.07,
+                                                                                  fit: BoxFit.contain,
+                                                                                )
+                                                                              else
+                                                                                Container(),
                                                                               SizedBox(
                                                                                 width: media.width * 0.02,
                                                                               ),
@@ -7432,9 +7458,25 @@ class _BookingConfirmationState extends State<BookingConfirmation>
                                                                                 fontweight: FontWeight.w600,
                                                                                 color: (isDarkTheme == true) ? Colors.white : Colors.black,
                                                                               ),
-                                                                            ],
-                                                                          ),
-                                                                        ),
+                                                                            ] else ...[
+                                                                              Image.asset(
+                                                                                'assets/images/invoice.png',
+                                                                                width: media.width * 0.06,
+                                                                                height: media.width * 0.06,
+                                                                                fit: BoxFit.contain,
+                                                                              ),
+                                                                              SizedBox(
+                                                                                width: media.width * 0.02,
+                                                                              ),
+                                                                              MyText(
+                                                                                text: "Invoice",
+                                                                                size: media.width * sixteen,
+                                                                                fontweight: FontWeight.bold,
+                                                                                color: (isDarkTheme == true) ? Colors.white : Colors.black,
+                                                                              ),
+                                                                            ]
+                                                                          ],
+                                                                        )),
                                                                         Column(
                                                                           crossAxisAlignment:
                                                                               CrossAxisAlignment.end,
@@ -7442,6 +7484,8 @@ class _BookingConfirmationState extends State<BookingConfirmation>
                                                                             Row(
                                                                               mainAxisAlignment: MainAxisAlignment.center,
                                                                               children: [
+                                                                                // Check if the user is private
+
                                                                                 (userRequestData['is_bid_ride'] == 1)
                                                                                     ? MyText(
                                                                                         textAlign: TextAlign.end,
@@ -7466,9 +7510,9 @@ class _BookingConfirmationState extends State<BookingConfirmation>
                                                                                             fontweight: FontWeight.w500,
                                                                                             color: textColor,
                                                                                             maxLines: 1,
-                                                                                          ),
+                                                                                          )
                                                                               ],
-                                                                            ),
+                                                                            )
                                                                           ],
                                                                         )
                                                                       ],

@@ -163,28 +163,33 @@ class _HistoryDetailsState extends State<HistoryDetails> {
                                             Row(
                                               children: [
                                                 MyText(
-                                                  text: (myHistory[
-                                                                  selectedHistory]
-                                                              ['payment_opt'] ==
-                                                          '1')
-                                                      ? languages[
-                                                              choosenLanguage]
-                                                          ['text_cash']
-                                                      : (myHistory[selectedHistory]
+                                                  text: (userDetails[
+                                                          'is_private'])
+                                                      ? (myHistory[selectedHistory]
                                                                   [
                                                                   'payment_opt'] ==
-                                                              '2')
+                                                              '1')
                                                           ? languages[
                                                                   choosenLanguage]
-                                                              ['text_wallet']
+                                                              ['text_cash']
                                                           : (myHistory[selectedHistory]
                                                                       [
                                                                       'payment_opt'] ==
-                                                                  '0')
+                                                                  '2')
                                                               ? languages[
                                                                       choosenLanguage]
-                                                                  ['text_card']
-                                                              : '',
+                                                                  [
+                                                                  'text_wallet']
+                                                              : (myHistory[selectedHistory]
+                                                                          [
+                                                                          'payment_opt'] ==
+                                                                      '0')
+                                                                  ? languages[
+                                                                          choosenLanguage]
+                                                                      [
+                                                                      'text_card']
+                                                                  : ''
+                                                      : "Invoice",
                                                   size: media.width * fourteen,
                                                   color: textColor,
                                                   fontweight: FontWeight.bold,
@@ -985,17 +990,17 @@ class _HistoryDetailsState extends State<HistoryDetails> {
                                                                         ['data'][
                                                                     'requested_currency_symbol'] +
                                                                 ' ' +
+                                                                myHistory[selectedHistory]['requestBill']['data']['waiting_charge_per_min']
+                                                                    .toString() +
+                                                                ' x ' +
                                                                 myHistory[selectedHistory]['requestBill']
                                                                             ['data']
                                                                         [
-                                                                        'waiting_charge_per_min']
+                                                                        'calculated_waiting_time']
                                                                     .toString() +
-                                                                ' x ' +
-                                                                myHistory[selectedHistory]
-                                                                            ['requestBill']['data']
-                                                                        ['calculated_waiting_time']
-                                                                    .toString() +
-                                                                ' ' +languages[choosenLanguage]['text_mins']+
+                                                                ' ' +
+                                                                languages[choosenLanguage]
+                                                                    ['text_mins'] +
                                                                 ')',
                                                             size: media.width *
                                                                 fourteen,

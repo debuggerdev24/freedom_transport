@@ -172,6 +172,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         } else if (response.statusCode == 422) {
                           var errorData = jsonDecode(response.body);
                           showSnackBar(context, "User does not exist");
+                          log("errorData ==========>${errorData}");
                         } else if (response.statusCode == 500) {
                           showSnackBar(
                               context, "Server error! Please try again later.");

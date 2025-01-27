@@ -493,17 +493,18 @@ class _HistoryState extends State<History> {
                                                                     size: media.width * fourteen),
                                                                 Row(
                                                                   children: [
+                                                                    // Check if the user is private
                                                                     MyText(
-                                                                      text: (myHistory[i]['payment_opt'] ==
-                                                                              '1')
-                                                                          ? languages[choosenLanguage]
-                                                                              [
-                                                                              'text_cash']
-                                                                          : (myHistory[i]['payment_opt'] == '2')
-                                                                              ? languages[choosenLanguage]['text_wallet']
-                                                                              : (myHistory[i]['payment_opt'] == '0')
-                                                                                  ? languages[choosenLanguage]['text_card']
-                                                                                  : '',
+                                                                      text: (userDetails[
+                                                                              'is_private'])
+                                                                          ? (myHistory[i]['payment_opt'] == '1')
+                                                                              ? languages[choosenLanguage]['text_cash']
+                                                                              : (myHistory[i]['payment_opt'] == '2')
+                                                                                  ? languages[choosenLanguage]['text_wallet']
+                                                                                  : (myHistory[i]['payment_opt'] == '0')
+                                                                                      ? languages[choosenLanguage]['text_card']
+                                                                                      : ''
+                                                                          : "Invoice",
                                                                       size: media
                                                                               .width *
                                                                           fourteen,
@@ -513,6 +514,7 @@ class _HistoryState extends State<History> {
                                                                           FontWeight
                                                                               .bold,
                                                                     ),
+
                                                                     SizedBox(
                                                                       width: media
                                                                               .width *

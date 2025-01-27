@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_user/pages/NavigatorPages/paymentgateways.dart';
 import 'package:flutter_user/translations/translation.dart';
@@ -53,7 +55,9 @@ class _WalletPageState extends State<WalletPage> {
       walletHistory.add({});
     }
     var val = await getWalletHistory();
+  
     await getCountryCode();
+    log("walletHistory=====>${walletHistory}");
     if (val == 'success') {
       setState(() {
         isLoading = false;

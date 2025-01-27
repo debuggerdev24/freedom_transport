@@ -281,8 +281,10 @@ class _NDISInformationState extends State<NDISInformation> {
                               },
                               activeColor: theme,
                             ),
-                            const Text(
-                                "I confirm that the information provided is\n accurate and up-to-date."),
+                            Text(
+                              "I confirm that the information provided is\n accurate and up-to-date.",
+                              style: TextStyle(color: verifyDeclined),
+                            ),
                           ],
                         ),
                         const Gap(15),
@@ -301,7 +303,12 @@ class _NDISInformationState extends State<NDISInformation> {
 
                     if ((_isNdisParticipant == null || !_isNdisParticipant)) {
                       showSnackBar(context,
-                          "You must select 'Yes' as an NDIS Participant to proceed.");
+                          "You must select 'Yes' as Participant to proceed.");
+                      return;
+                    }
+                    if (!ndisTransport) {
+                      showSnackBar(context,
+                          "You must confirm the information by checking the box.");
                       return;
                     }
 
@@ -357,8 +364,6 @@ class _NDISInformationState extends State<NDISInformation> {
     _isNdisParticipant = false;
     _hasHealthCondition = false;
     _planType.isNotEmpty;
-    agedCareTransport = false;
-    niisqTransport = true;
-    privateTransport = false;
+    ndisTransport = false;
   }
 }

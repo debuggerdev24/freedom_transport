@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_user/pages/login/login.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -42,6 +44,7 @@ class _NotificationPageState extends State<NotificationPage> {
       }
     }
     var val = await getnotificationHistory();
+    log("notifactionhistroy =======>${val}");
     if (val == 'success') {
       isLoading = false;
     } else {
@@ -245,6 +248,7 @@ class _NotificationPageState extends State<NotificationPage> {
                                                               setState(() {
                                                                 showinfovalue =
                                                                     i;
+                                                             
                                                                 showinfo = true;
                                                               });
                                                             },
